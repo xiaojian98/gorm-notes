@@ -20,8 +20,8 @@ type BaseModel struct {
 // User 用户模型
 type User struct {
 	BaseModel
-	Username    string     `json:"username" gorm:"size:50;uniqueIndex;not null" validate:"required,min=3,max=50"`
-	Email       string     `json:"email" gorm:"size:100;uniqueIndex;not null" validate:"required,email"`
+	Username    string     `json:"username" gorm:"size:50;uniqueIndex:idx_user_username;not null" validate:"required,min=3,max=50"`
+	Email       string     `json:"email" gorm:"size:100;uniqueIndex:idx_user_email;not null" validate:"required,email"` 
 	Password    string     `json:"-" gorm:"size:255;not null" validate:"required,min=6"`
 	Nickname    string     `json:"nickname" gorm:"size:50"`
 	Avatar      string     `json:"avatar" gorm:"size:255"`
@@ -29,11 +29,11 @@ type User struct {
 	LastLoginAt *time.Time `json:"last_login_at"`
 	LoginCount  int        `json:"login_count" gorm:"default:0"`
 
-	// 关联关系
-	Profile  *Profile   `json:"profile,omitempty" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Posts    []*Post    `json:"posts,omitempty" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Comments []*Comment `json:"comments,omitempty" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Likes    []*Like    `json:"likes,omitempty" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
+	Profile  *Profile   `json:"profile,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_profiles_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Posts    []*Post    `json:"posts,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_posts_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Comments []*Comment `json:"comments,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_comments_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Likes    []*Like    `json:"likes,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_likes_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Profile 用户资料模型
@@ -46,8 +46,8 @@ type Profile struct {
 	Birthday *time.Time `json:"birthday"`
 	Gender   string     `json:"gender" gorm:"size:10;default:unknown" validate:"oneof=male female unknown"`
 
-	// 关联关系
-	User User `json:"user,omitempty" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
+	User User `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_profiles_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Category 分类模型
@@ -61,8 +61,8 @@ type Category struct {
 	SortOrder   int    `json:"sort_order" gorm:"default:0;index"`
 	PostCount   int    `json:"post_count" gorm:"default:0"`
 
-	// 关联关系
-	Posts []Post `json:"posts,omitempty" gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
+	Posts []Post `json:"posts,omitempty" gorm:"foreignKey:CategoryID;references:ID;constraint:fk_posts_category_id,OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 // Tag 标签模型
@@ -93,11 +93,11 @@ type Post struct {
 	UserID       uint       `json:"user_id" gorm:"not null;index"`
 	CategoryID   *uint      `json:"category_id" gorm:"index"`
 
-	// 关联关系
-	User     User      `json:"user,omitempty" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Category *Category `json:"category,omitempty" gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
+	User     User      `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_posts_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Category *Category `json:"category,omitempty" gorm:"foreignKey:CategoryID;references:ID;constraint:fk_posts_category_id,OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Tags     []Tag     `json:"tags,omitempty" gorm:"many2many:post_tags;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Comments []Comment `json:"comments,omitempty" gorm:"foreignKey:PostID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Comments []Comment `json:"comments,omitempty" gorm:"foreignKey:PostID;references:ID;constraint:fk_comments_post_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Likes    []Like    `json:"likes,omitempty" gorm:"foreignKey:TargetID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
@@ -112,11 +112,11 @@ type Comment struct {
 	UserID    uint   `json:"user_id" gorm:"not null;index"`
 	ParentID  *uint  `json:"parent_id" gorm:"index"` // 支持回复评论
 
-	// 关联关系
-	Post    Post      `json:"post,omitempty" gorm:"foreignKey:PostID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	User    User      `json:"user,omitempty" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Parent  *Comment  `json:"parent,omitempty" gorm:"foreignKey:ParentID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Replies []Comment `json:"replies,omitempty" gorm:"foreignKey:ParentID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
+	Post    Post      `json:"post,omitempty" gorm:"foreignKey:PostID;references:ID;constraint:fk_comments_post_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	User    User      `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_comments_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Parent  *Comment  `json:"parent,omitempty" gorm:"foreignKey:ParentID;references:ID;constraint:fk_comments_parent_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Replies []Comment `json:"replies,omitempty" gorm:"foreignKey:ParentID;references:ID;constraint:fk_comments_parent_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Like 点赞模型
@@ -126,8 +126,8 @@ type Like struct {
 	TargetID   uint   `json:"target_id" gorm:"not null;index"`
 	TargetType string `json:"target_type" gorm:"size:20;not null;index" validate:"oneof=post comment"`
 
-	// 关联关系
-	User User `json:"user,omitempty" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
+	User User `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_likes_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
 	// 复合唯一索引，防止重复点赞
 	// 在AutoMigrate中会自动创建
@@ -246,18 +246,29 @@ func AutoMigrate(db *gorm.DB) error {
 // createIndexes 创建复合索引
 func createIndexes(db *gorm.DB) error {
 	// 为Like表创建复合唯一索引
-	if err := db.Exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_likes_user_target ON `Like`(UserID, TargetID, TargetType)").Error; err != nil {
-		return err
+	// 先检查索引是否存在，如果不存在则创建
+	var count int64
+	db.Raw("SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Like' AND index_name = 'idx_likes_user_target'").Scan(&count)
+	if count == 0 {
+		if err := db.Exec("CREATE UNIQUE INDEX idx_likes_user_target ON `Like`(UserID, TargetID, TargetType)").Error; err != nil {
+			return err
+		}
 	}
 
 	// 为Post表创建复合索引
-	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_posts_status_published ON `Post`(Status, PublishedAt)").Error; err != nil {
-		return err
+	db.Raw("SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Post' AND index_name = 'idx_posts_status_published'").Scan(&count)
+	if count == 0 {
+		if err := db.Exec("CREATE INDEX idx_posts_status_published ON `Post`(Status, PublishedAt)").Error; err != nil {
+			return err
+		}
 	}
 
 	// 为Comment表创建复合索引
-	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_comments_post_status ON `Comment`(PostID, Status)").Error; err != nil {
-		return err
+	db.Raw("SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Comment' AND index_name = 'idx_comments_post_status'").Scan(&count)
+	if count == 0 {
+		if err := db.Exec("CREATE INDEX idx_comments_post_status ON `Comment`(PostID, Status)").Error; err != nil {
+			return err
+		}
 	}
 
 	return nil

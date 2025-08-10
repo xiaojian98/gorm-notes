@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"gorm.io/driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -118,6 +119,8 @@ func InitMySQLDB() error {
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger:         logger.Default.LogMode(logger.Info),
 		PrepareStmt:    true,
+		// 禁用外键约束迁移时的检查
+		DisableForeignKeyConstraintWhenMigrating: true,
 		NamingStrategy: &CustomNamingStrategy{},
 	})
 
@@ -135,9 +138,9 @@ func InitMySQLDB() error {
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	// return nil
+	return nil
 
-	return fmt.Errorf("MySQL driver not imported, please uncomment the code above and install mysql driver")
+	// return fmt.Errorf("MySQL driver not imported, please uncomment the code above and install mysql driver")
 }
 
 // CustomNamingStrategy 自定义命名策略
