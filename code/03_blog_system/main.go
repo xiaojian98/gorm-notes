@@ -5,6 +5,7 @@ package main
 
 import (
 	"blog-system/config"
+	"blog-system/migrations"
 	"blog-system/models"
 	"blog-system/routes"
 	"blog-system/services"
@@ -22,8 +23,8 @@ func main() {
 	}
 	log.Println("✅ 数据库连接成功")
 
-	// 自动迁移
-	if err := models.AutoMigrate(config.DB); err != nil {
+	// 运行数据库迁移
+	if err := migrations.RunMigrations(config.DB); err != nil {
 		log.Fatal("数据库迁移失败:", err)
 	}
 	log.Println("✅ 数据库迁移完成")

@@ -218,10 +218,12 @@ func (l *Like) AfterDelete(tx *gorm.DB) error {
 	return nil
 }
 
-// AutoMigrate 自动迁移所有模型
+// AutoMigrate 自动迁移数据库 - 已弃用，请使用迁移系统
+// 保留此函数是为了向后兼容，但建议使用 migrations 包
 func AutoMigrate(db *gorm.DB) error {
-	// 按照依赖关系顺序迁移
-	err := db.AutoMigrate(
+	// 这个函数现在只是一个简单的包装器
+	// 实际的迁移逻辑已移至 migrations 包
+	return db.AutoMigrate(
 		&User{},
 		&Profile{},
 		&Category{},
@@ -230,46 +232,4 @@ func AutoMigrate(db *gorm.DB) error {
 		&Comment{},
 		&Like{},
 	)
-
-	if err != nil {
-		return err
-	}
-
-	// 创建复合索引
-	if err := createIndexes(db); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// createIndexes 创建复合索引
-func createIndexes(db *gorm.DB) error {
-	// 为Like表创建复合唯一索引
-	// 先检查索引是否存在，如果不存在则创建
-	var count int64
-	db.Raw("SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Like' AND index_name = 'idx_likes_user_target'").Scan(&count)
-	if count == 0 {
-		if err := db.Exec("CREATE UNIQUE INDEX idx_likes_user_target ON `Like`(UserID, TargetID, TargetType)").Error; err != nil {
-			return err
-		}
-	}
-
-	// 为Post表创建复合索引
-	db.Raw("SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Post' AND index_name = 'idx_posts_status_published'").Scan(&count)
-	if count == 0 {
-		if err := db.Exec("CREATE INDEX idx_posts_status_published ON `Post`(Status, PublishedAt)").Error; err != nil {
-			return err
-		}
-	}
-
-	// 为Comment表创建复合索引
-	db.Raw("SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Comment' AND index_name = 'idx_comments_post_status'").Scan(&count)
-	if count == 0 {
-		if err := db.Exec("CREATE INDEX idx_comments_post_status ON `Comment`(PostID, Status)").Error; err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
