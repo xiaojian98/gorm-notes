@@ -1,0 +1,107 @@
+# 在线教育平台配置文件
+
+# 服务器配置
+server:
+  host: "0.0.0.0"
+  port: 8080
+  mode: "debug"  # debug, release, test
+  read_timeout: "30s"
+  write_timeout: "30s"
+  max_header_mb: 1
+
+# 数据库配置
+database:
+  driver: "mysql"
+  host: "localhost"
+  port: 3306
+  username: "root"
+  password: "123456"
+  dbname: "edu_platform"
+  charset: "utf8mb4"
+  parse_time: true
+  loc: "Local"
+  max_idle_conns: 10
+  max_open_conns: 100
+  conn_max_lifetime: "1h"
+  log_level: "info"  # silent, error, warn, info
+
+# Redis配置
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 10
+  min_idle_conns: 5
+  dial_timeout: "5s"
+  read_timeout: "3s"
+  write_timeout: "3s"
+  idle_timeout: "5m"
+
+# JWT配置
+jwt:
+  secret: "edu-platform-jwt-secret-key-2024"
+  expire_duration: "24h"
+  refresh_duration: "168h"  # 7天
+  issuer: "edu-platform"
+  signing_method: "HS256"
+
+# 日志配置
+logger:
+  level: "info"  # debug, info, warn, error
+  format: "json"  # json, text
+  output: "file"  # stdout, file, both
+  filename: "logs/app.log"
+  max_size: 100  # MB
+  max_age: 30    # 天
+  max_backups: 10
+  compress: true
+
+# 文件上传配置
+upload:
+  path: "uploads"
+  max_size: 10485760  # 10MB
+  allowed_types:
+    - "jpg"
+    - "jpeg"
+    - "png"
+    - "gif"
+    - "pdf"
+    - "doc"
+    - "docx"
+    - "mp4"
+    - "avi"
+    - "mov"
+  image_resize: true
+  image_width: 800
+  image_height: 600
+  image_quality: 80
+
+# 邮件配置
+email:
+  smtp_host: "smtp.gmail.com"
+  smtp_port: 587
+  smtp_username: "your-email@gmail.com"
+  smtp_password: "your-app-password"
+  from_email: "your-email@gmail.com"
+  from_name: "在线教育平台"
+
+# 支付配置
+payment:
+  # 支付宝配置
+  alipay:
+    app_id: "your-alipay-app-id"
+    private_key: "your-alipay-private-key"
+    public_key: "your-alipay-public-key"
+    notify_url: "http://your-domain.com/api/v1/payment/alipay/notify"
+    return_url: "http://your-domain.com/payment/success"
+    sign_type: "RSA2"
+    is_sandbox: true
+  
+  # 微信支付配置
+  wechat:
+    app_id: "your-wechat-app-id"
+    mch_id: "your-wechat-mch-id"
+    api_key: "your-wechat-api-key"
+    notify_url: "http://your-domain.com/api/v1/payment/wechat/notify"
+    is_sandbox: true
