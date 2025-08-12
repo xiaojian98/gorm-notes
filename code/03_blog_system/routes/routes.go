@@ -4,9 +4,10 @@
 package routes
 
 import (
-	"blog-system/handlers"
 	"fmt"
 	"net/http"
+
+	"blog-system/handlers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +24,7 @@ func SetupRoutes() *gin.Engine {
 	// 健康检查
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"status": "ok",
+			"status":  "ok",
 			"message": "Blog system is running",
 		})
 	})
@@ -96,11 +97,16 @@ func SetupRoutes() *gin.Engine {
 // CORSMiddleware CORS中间件
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// 允许所有域名访问
 		c.Header("Access-Control-Allow-Origin", "*")
+		// 允许携带cookie
 		c.Header("Access-Control-Allow-Credentials", "true")
+		// 允许的请求头
 		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		// 允许的请求方法
 		c.Header("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
 
+		// 处理预检请求
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return

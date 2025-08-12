@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"gorm.io/driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -33,10 +33,10 @@ type DatabaseConfig struct {
 // GetDatabaseConfig 获取数据库配置
 func GetDatabaseConfig() *DatabaseConfig {
 	return &DatabaseConfig{
-		Host:     getEnv("DB_HOST", "192.168.100.124"),
+		Host:     getEnv("DB_HOST", "10.6.2.7"),
 		Port:     getEnv("DB_PORT", "3306"),
 		User:     getEnv("DB_USER", "root"),
-		Password: getEnv("DB_PASSWORD", "123456"),
+		Password: getEnv("DB_PASSWORD", "haoyun@123"),
 		DBName:   getEnv("DB_NAME", "blog_system"),
 		Charset:  getEnv("DB_CHARSET", "utf8mb4"),
 	}
@@ -74,7 +74,6 @@ func InitDB() error {
 		// 命名策略
 		NamingStrategy: &CustomNamingStrategy{},
 	})
-
 	if err != nil {
 		return fmt.Errorf("failed to connect database: %w", err)
 	}
@@ -117,13 +116,12 @@ func InitMySQLDB() error {
 
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger:         logger.Default.LogMode(logger.Info),
-		PrepareStmt:    true,
+		Logger:      logger.Default.LogMode(logger.Info),
+		PrepareStmt: true,
 		// 禁用外键约束迁移时的检查
 		DisableForeignKeyConstraintWhenMigrating: true,
-		NamingStrategy: &CustomNamingStrategy{},
+		NamingStrategy:                           &CustomNamingStrategy{},
 	})
-
 	if err != nil {
 		return fmt.Errorf("failed to connect database: %w", err)
 	}
@@ -158,7 +156,9 @@ func (ns *CustomNamingStrategy) TableName(table string) string {
 
 // ColumnName 列名命名策略
 func (ns *CustomNamingStrategy) ColumnName(table, column string) string {
-	return column
+	defaultNaming := schema.NamingStrategy{}
+	return defaultNaming.ColumnName(table, column)
+	// return column
 }
 
 // JoinTableName 连接表命名策略

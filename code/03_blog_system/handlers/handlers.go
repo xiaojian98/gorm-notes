@@ -4,11 +4,12 @@
 package handlers
 
 import (
-	"blog-system/models"
-	"blog-system/services"
 	"net/http"
 	"strconv"
 	"time"
+
+	"blog-system/models"
+	"blog-system/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -118,6 +119,7 @@ func UpdateUserProfile(c *gin.Context) {
 		Avatar   string `json:"avatar"`
 		Website  string `json:"website"`
 		Location string `json:"location"`
+		Gender   string `json:"gender"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -126,10 +128,10 @@ func UpdateUserProfile(c *gin.Context) {
 	}
 
 	updates := map[string]interface{}{
-		"nickname": req.Nickname,
 		"bio":      req.Bio,
 		"website":  req.Website,
 		"location": req.Location,
+		"gender":   req.Gender,
 	}
 	err = services.UserService.UpdateUserProfile(uint(id), updates)
 	if err != nil {
@@ -317,6 +319,7 @@ func DeletePost(c *gin.Context) {
 // PublishPost 发布文章
 func PublishPost(c *gin.Context) {
 	idStr := c.Param("id")
+	// 检查文章是否存在
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "无效的文章ID"})

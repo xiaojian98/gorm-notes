@@ -4,12 +4,13 @@
 package main
 
 import (
+	"log"
+
 	"blog-system/config"
 	"blog-system/migrations"
 	"blog-system/models"
 	"blog-system/routes"
 	"blog-system/services"
-	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,12 +34,12 @@ func main() {
 	services.InitServices(config.DB)
 	log.Println("✅ 服务初始化完成")
 
-	// 创建测试数据
-	if err := createTestData(); err != nil {
-		log.Printf("⚠️ 创建测试数据失败: %v", err)
-	} else {
-		log.Println("✅ 测试数据创建完成")
-	}
+	// // 创建测试数据
+	// if err := createTestData(); err != nil {
+	// 	log.Printf("⚠️ 创建测试数据失败: %v", err)
+	// } else {
+	// 	log.Println("✅ 测试数据创建完成")
+	// }
 
 	// 设置Gin模式
 	gin.SetMode(gin.ReleaseMode)
@@ -72,6 +73,7 @@ func createTestData() error {
 
 	for _, category := range categories {
 		var existingCategory models.Category
+		// 检查分类是否已存在
 		if err := config.DB.Where("slug = ?", category.Slug).First(&existingCategory).Error; err != nil {
 			if err := config.DB.Create(&category).Error; err != nil {
 				return err

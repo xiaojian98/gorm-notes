@@ -1,0 +1,600 @@
+{
+	"info": {
+		"_postman_id": "blog-system-api-collection",
+		"name": "博客系统 API 接口集合",
+		"description": "基于 GORM 的博客系统完整 API 接口集合，包含用户管理、文章管理、评论系统、分类标签等功能模块",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "blog-system"
+	},
+	"item": [
+		{
+			"name": "🏥 系统健康检查",
+			"item": [
+				{
+					"name": "健康检查",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "检查系统运行状态"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "👤 用户管理",
+			"item": [
+				{
+					"name": "用户注册",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\",\n  \"nickname\": \"测试用户\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "register"]
+						},
+						"description": "用户注册接口，创建新用户账号"
+					},
+					"response": []
+				},
+				{
+					"name": "用户登录",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "login"]
+						},
+						"description": "用户登录接口，验证用户凭据"
+					},
+					"response": []
+				},
+				{
+					"name": "获取用户信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "{{user_id}}"]
+						},
+						"description": "根据用户ID获取用户详细信息"
+					},
+					"response": []
+				},
+				{
+					"name": "更新用户资料",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bio\": \"这是我的个人简介\",\n  \"website\": \"https://example.com\",\n  \"location\": \"北京\",\n  \"gender\": \"male\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "{{user_id}}", "profile"]
+						},
+						"description": "更新用户个人资料信息"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📝 文章管理",
+			"item": [
+				{
+					"name": "获取文章列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/posts?page=1&limit=10&status=published",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "published"
+								}
+							]
+						},
+						"description": "获取文章列表，支持分页和状态筛选"
+					},
+					"response": []
+				},
+				{
+					"name": "根据ID获取文章",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/posts/{{post_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", "{{post_id}}"]
+						},
+						"description": "根据文章ID获取文章详情，会自动增加浏览量"
+					},
+					"response": []
+				},
+				{
+					"name": "根据Slug获取文章",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/posts/slug/{{post_slug}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", "slug", "{{post_slug}}"]
+						},
+						"description": "根据文章Slug获取文章详情"
+					},
+					"response": []
+				},
+				{
+					"name": "创建文章",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"我的第一篇博客文章\",\n  \"content\": \"这是文章的详细内容，支持Markdown格式...\",\n  \"excerpt\": \"这是文章摘要\",\n  \"slug\": \"my-first-blog-post\",\n  \"author_id\": 1,\n  \"category_id\": 1,\n  \"tags\": [1, 2, 3],\n  \"status\": \"draft\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/posts",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts"]
+						},
+						"description": "创建新的文章"
+					},
+					"response": []
+				},
+				{
+					"name": "更新文章",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"更新后的文章标题\",\n  \"content\": \"更新后的文章内容...\",\n  \"excerpt\": \"更新后的摘要\",\n  \"category_id\": 2,\n  \"tags\": [2, 3, 4],\n  \"status\": \"published\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/posts/{{post_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", "{{post_id}}"]
+						},
+						"description": "更新指定文章的内容"
+					},
+					"response": []
+				},
+				{
+					"name": "删除文章",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/posts/{{post_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", "{{post_id}}"]
+						},
+						"description": "删除指定文章（软删除）"
+					},
+					"response": []
+				},
+				{
+					"name": "发布文章",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/posts/{{post_id}}/publish",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", "{{post_id}}", "publish"]
+						},
+						"description": "将草稿状态的文章发布"
+					},
+					"response": []
+				},
+				{
+					"name": "点赞文章",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/posts/{{post_id}}/like",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", "{{post_id}}", "like"]
+						},
+						"description": "对文章进行点赞"
+					},
+					"response": []
+				},
+				{
+					"name": "取消点赞文章",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/posts/{{post_id}}/like",
+							"host": ["{{base_url}}"],
+							"path": ["api", "posts", "{{post_id}}", "like"]
+						},
+						"description": "取消对文章的点赞"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "💬 评论管理",
+			"item": [
+				{
+					"name": "获取文章评论",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/comments/post/{{post_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "comments", "post", "{{post_id}}"]
+						},
+						"description": "获取指定文章的所有评论"
+					},
+					"response": []
+				},
+				{
+					"name": "创建评论",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"这是一条评论内容\",\n  \"post_id\": 1,\n  \"user_id\": 1,\n  \"parent_id\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/comments",
+							"host": ["{{base_url}}"],
+							"path": ["api", "comments"]
+						},
+						"description": "创建新评论，parent_id为null表示顶级评论，有值表示回复评论"
+					},
+					"response": []
+				},
+				{
+					"name": "回复评论",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"这是对评论的回复\",\n  \"post_id\": 1,\n  \"user_id\": 2,\n  \"parent_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/comments",
+							"host": ["{{base_url}}"],
+							"path": ["api", "comments"]
+						},
+						"description": "回复指定评论"
+					},
+					"response": []
+				},
+				{
+					"name": "审核通过评论",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/comments/{{comment_id}}/approve",
+							"host": ["{{base_url}}"],
+							"path": ["api", "comments", "{{comment_id}}", "approve"]
+						},
+						"description": "管理员审核通过评论"
+					},
+					"response": []
+				},
+				{
+					"name": "拒绝评论",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/comments/{{comment_id}}/reject",
+							"host": ["{{base_url}}"],
+							"path": ["api", "comments", "{{comment_id}}", "reject"]
+						},
+						"description": "管理员拒绝评论"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📂 分类管理",
+			"item": [
+				{
+					"name": "获取分类列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"]
+						},
+						"description": "获取所有文章分类"
+					},
+					"response": []
+				},
+				{
+					"name": "根据Slug获取分类",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/categories/{{category_slug}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories", "{{category_slug}}"]
+						},
+						"description": "根据分类Slug获取分类详情"
+					},
+					"response": []
+				},
+				{
+					"name": "创建分类",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"技术分享\",\n  \"slug\": \"tech-share\",\n  \"description\": \"技术相关的文章分类\",\n  \"color\": \"#007bff\",\n  \"icon\": \"tech\",\n  \"sort_order\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "categories"]
+						},
+						"description": "创建新的文章分类"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🏷️ 标签管理",
+			"item": [
+				{
+					"name": "获取标签列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tags",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tags"]
+						},
+						"description": "获取所有标签"
+					},
+					"response": []
+				},
+				{
+					"name": "获取热门标签",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tags/popular",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tags", "popular"]
+						},
+						"description": "获取使用频率最高的标签"
+					},
+					"response": []
+				},
+				{
+					"name": "创建标签",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Go语言\",\n  \"slug\": \"golang\",\n  \"color\": \"#00ADD8\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tags",
+							"host": ["{{base_url}}"],
+							"path": ["api", "tags"]
+						},
+						"description": "创建新的标签"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📊 统计信息",
+			"item": [
+				{
+					"name": "获取统计概览",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/stats/overview",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stats", "overview"]
+						},
+						"description": "获取系统整体统计信息"
+					},
+					"response": []
+				},
+				{
+					"name": "获取热门文章",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/stats/posts/popular?limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "stats", "posts", "popular"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "获取最受欢迎的文章列表"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📖 API文档",
+			"item": [
+				{
+					"name": "获取API文档",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/docs",
+							"host": ["{{base_url}}"],
+							"path": ["api", "docs"]
+						},
+						"description": "获取完整的API接口文档"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"description": "博客系统API基础URL"
+		},
+		{
+			"key": "user_id",
+			"value": "1",
+			"type": "string",
+			"description": "用户ID，用于测试"
+		},
+		{
+			"key": "post_id",
+			"value": "1",
+			"type": "string",
+			"description": "文章ID，用于测试"
+		},
+		{
+			"key": "post_slug",
+			"value": "my-first-blog-post",
+			"type": "string",
+			"description": "文章Slug，用于测试"
+		},
+		{
+			"key": "comment_id",
+			"value": "1",
+			"type": "string",
+			"description": "评论ID，用于测试"
+		},
+		{
+			"key": "category_slug",
+			"value": "tech-share",
+			"type": "string",
+			"description": "分类Slug，用于测试"
+		}
+	]
+}

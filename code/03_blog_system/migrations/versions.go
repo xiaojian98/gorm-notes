@@ -5,6 +5,7 @@ package migrations
 
 import (
 	"blog-system/models"
+
 	"gorm.io/gorm"
 )
 
@@ -64,7 +65,7 @@ func migration002Up(db *gorm.DB) error {
 	var count int64
 	db.Raw("SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Like' AND index_name = 'idx_likes_user_target'").Scan(&count)
 	if count == 0 {
-		if err := db.Exec("CREATE UNIQUE INDEX idx_likes_user_target ON `Like`(UserID, TargetID, TargetType)").Error; err != nil {
+		if err := db.Exec("CREATE UNIQUE INDEX idx_likes_user_target ON `Like`(user_id, target_id, target_type)").Error; err != nil {
 			return err
 		}
 	}
@@ -72,7 +73,7 @@ func migration002Up(db *gorm.DB) error {
 	// 为Post表创建复合索引
 	db.Raw("SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Post' AND index_name = 'idx_posts_status_published'").Scan(&count)
 	if count == 0 {
-		if err := db.Exec("CREATE INDEX idx_posts_status_published ON `Post`(Status, PublishedAt)").Error; err != nil {
+		if err := db.Exec("CREATE INDEX idx_posts_status_published ON `Post`(status, published_at)").Error; err != nil {
 			return err
 		}
 	}
@@ -80,7 +81,7 @@ func migration002Up(db *gorm.DB) error {
 	// 为Comment表创建复合索引
 	db.Raw("SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'Comment' AND index_name = 'idx_comments_post_status'").Scan(&count)
 	if count == 0 {
-		if err := db.Exec("CREATE INDEX idx_comments_post_status ON `Comment`(PostID, Status)").Error; err != nil {
+		if err := db.Exec("CREATE INDEX idx_comments_post_status ON `Comment`(post_id, status)").Error; err != nil {
 			return err
 		}
 	}
@@ -116,7 +117,7 @@ func migration002Down(db *gorm.DB) error {
 func migration003Up(db *gorm.DB) error {
 	// 检查并修复可能存在的约束问题
 	// 这个迁移主要是为了处理之前可能存在的约束冲突
-	
+
 	// 检查是否存在问题约束
 	var constraintCount int64
 	db.Raw(`
@@ -125,7 +126,7 @@ func migration003Up(db *gorm.DB) error {
 		WHERE constraint_schema = DATABASE() 
 		AND constraint_name LIKE 'uniq_User_%'
 	`).Scan(&constraintCount)
-	
+
 	// 如果存在问题约束，尝试删除
 	if constraintCount > 0 {
 		// 获取所有问题约束名称
@@ -136,13 +137,13 @@ func migration003Up(db *gorm.DB) error {
 			WHERE constraint_schema = DATABASE() 
 			AND constraint_name LIKE 'uniq_User_%'
 		`).Scan(&constraints)
-		
+
 		for _, constraint := range constraints {
 			// 安全地删除约束
 			db.Exec("ALTER TABLE User DROP INDEX IF EXISTS " + constraint)
 		}
 	}
-	
+
 	return nil
 }
 

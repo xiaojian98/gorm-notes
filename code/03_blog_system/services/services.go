@@ -4,11 +4,12 @@
 package services
 
 import (
-	"blog-system/models"
 	"errors"
 	"fmt"
 	"strings"
 	"time"
+
+	"blog-system/models"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -16,11 +17,11 @@ import (
 
 // 全局服务实例
 var (
-	UserService    *userService
-	PostService    *postService
-	CommentService *commentService
+	UserService     *userService
+	PostService     *postService
+	CommentService  *commentService
 	CategoryService *categoryService
-	TagService     *tagService
+	TagService      *tagService
 )
 
 // InitServices 初始化所有服务
@@ -42,7 +43,7 @@ type userService struct {
 func (s *userService) RegisterUser(username, email, password string) (*models.User, error) {
 	// 检查用户名是否已存在
 	var existingUser models.User
-	if err := s.db.Where("username = ? OR email = ?", username, email).First(&existingUser).Error; err == nil {
+	if err := s.db.Where("Username = ? OR Email = ?", username, email).First(&existingUser).Error; err == nil {
 		return nil, errors.New("用户名或邮箱已存在")
 	}
 
@@ -128,16 +129,32 @@ func (s *postService) CreatePost(post *models.Post) error {
 
 // GetPostByID 根据ID获取文章
 func (s *postService) GetPostByID(id uint) (*models.Post, error) {
-	var post models.Post
-	if err := s.db.Preload("User").Preload("Category").Preload("Tags").Preload("Comments.User").First(&post, id).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, errors.New("文章不存在")
-		}
-		return nil, fmt.Errorf("查询文章失败: %w", err)
-	}
+	// var post models.Post
+	// if err := s.db.Preload("User").Preload("Category").Preload("Tags").Preload("Comments.User").First(&post, id).Error; err != nil {
+	// 	if err == gorm.ErrRecordNotFound {
+	// 		return nil, errors.New("文章不存在")
+	// 	}
+	// 	return nil, fmt.Errorf("查询文章失败: %w", err)
+	// }
 
-	// 增加浏览量
-	s.db.Model(&post).UpdateColumn("view_count", gorm.Expr("view_count + ?", 1))
+	// // 增加浏览量
+	// s.db.Model(&post).UpdateColumn("ViewCount", gorm.Expr("ViewCount + ?", 1))
+
+	var post models.Post
+
+	err := s.db.
+		Joins("User").     // LEFT JOIN 用户表
+		Joins("Category"). // LEFT JOIN 分类表
+		Preload("Tags").   // 标签仍用Preload
+		First(&post, id).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, errors.New("文章不存在")
+	}
+	// 修复浏览量更新
+	go func() {
+		s.db.Model(&models.Post{}).Where("id = ?", id).
+			UpdateColumn("view_count", gorm.Expr("view_count + ?", 1))
+	}()
 
 	return &post, nil
 }
@@ -187,12 +204,31 @@ func (s *postService) GetPosts(page, pageSize int, filters map[string]interface{
 
 	// 分页查询
 	offset := (page - 1) * pageSize
+	// err := s.db.
+	// 	Joins("User").     // LEFT JOIN 用户表
+	// 	Joins("Category"). // LEFT JOIN 分类表
+	// 	Preload("Tags").   // 标签仍用Preload
+	// 	Order("CreatedAt DESC").
+	// 	Offset(offset).Limit(pageSize).
+	// 	Find(&posts).Error
+	// if err != nil {
+	// 	return nil, 0, fmt.Errorf("查询文章列表失败: %w", err)
+	// }
 	if err := query.Preload("User").Preload("Category").Preload("Tags").
 		Order("created_at DESC").
 		Offset(offset).Limit(pageSize).
 		Find(&posts).Error; err != nil {
 		return nil, 0, fmt.Errorf("查询文章列表失败: %w", err)
 	}
+
+	// for _, post := range posts {
+	// 	fmt.Println("文章标题:", post.Title)
+	// 	fmt.Println("作者邮箱:", post.User.Email)    // ⚠️ 这里会触发：SELECT * FROM users WHERE id = ?
+	// 	fmt.Println("分类名称:", post.Category.Name) // ⚠️ 这里会触发：SELECT * FROM categories WHERE id = ?
+	// 	for _, tag := range post.Tags {          // ⚠️ 这里会触发：SELECT * FROM tags JOIN ... WHERE post_id = ?
+	// 		fmt.Println("标签名称:", tag.Name)
+	// 	}
+	// }
 
 	return posts, total, nil
 }

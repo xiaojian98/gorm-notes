@@ -21,7 +21,7 @@ type BaseModel struct {
 type User struct {
 	BaseModel
 	Username    string     `json:"username" gorm:"size:50;uniqueIndex:idx_user_username;not null" validate:"required,min=3,max=50"`
-	Email       string     `json:"email" gorm:"size:100;uniqueIndex:idx_user_email;not null" validate:"required,email"` 
+	Email       string     `json:"email" gorm:"size:100;uniqueIndex:idx_user_email;not null" validate:"required,email"`
 	Password    string     `json:"-" gorm:"size:255;not null" validate:"required,min=6"`
 	Nickname    string     `json:"nickname" gorm:"size:50"`
 	Avatar      string     `json:"avatar" gorm:"size:255"`
@@ -30,10 +30,14 @@ type User struct {
 	LoginCount  int        `json:"login_count" gorm:"default:0"`
 
 	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
-	Profile  *Profile   `json:"profile,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_profiles_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Posts    []*Post    `json:"posts,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_posts_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一个用户只能有一个个人资料
+	Profile *Profile `json:"profile,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_profiles_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一个用户可以发布多篇文章
+	Posts []*Post `json:"posts,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_posts_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一个用户可以评论多篇文章
 	Comments []*Comment `json:"comments,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_comments_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Likes    []*Like    `json:"likes,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_likes_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一个用户可以点赞多篇文章
+	Likes []*Like `json:"likes,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_likes_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Profile 用户资料模型
@@ -47,13 +51,15 @@ type Profile struct {
 	Gender   string     `json:"gender" gorm:"size:10;default:unknown" validate:"oneof=male female unknown"`
 
 	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
+	// 一个用户只能有一个个人资料
 	User User `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_profiles_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Category 分类模型
 type Category struct {
 	BaseModel
-	Name        string `json:"name" gorm:"size:100;not null;index" validate:"required,max=100"`
+	Name string `json:"name" gorm:"size:100;not null;index" validate:"required,max=100"`
+	// 分类的URL slug，用于生成文章URL
 	Slug        string `json:"slug" gorm:"size:100;uniqueIndex;not null" validate:"required,max=100"`
 	Description string `json:"description" gorm:"type:text"`
 	Color       string `json:"color" gorm:"size:7;default:#007bff"`
@@ -62,6 +68,7 @@ type Category struct {
 	PostCount   int    `json:"post_count" gorm:"default:0"`
 
 	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
+	// 一个分类可以有多篇文章
 	Posts []Post `json:"posts,omitempty" gorm:"foreignKey:CategoryID;references:ID;constraint:fk_posts_category_id,OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
@@ -74,6 +81,7 @@ type Tag struct {
 	PostCount int    `json:"post_count" gorm:"default:0"`
 
 	// 多对多关联关系
+	// 一个标签可以对应多篇文章
 	Posts []Post `json:"posts,omitempty" gorm:"many2many:post_tags;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
@@ -94,11 +102,16 @@ type Post struct {
 	CategoryID   *uint      `json:"category_id" gorm:"index"`
 
 	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
-	User     User      `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_posts_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一篇文章只能有一个作者
+	User User `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_posts_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一篇文章可以有多个标签
 	Category *Category `json:"category,omitempty" gorm:"foreignKey:CategoryID;references:ID;constraint:fk_posts_category_id,OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Tags     []Tag     `json:"tags,omitempty" gorm:"many2many:post_tags;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一篇文章可以有多个标签
+	Tags []Tag `json:"tags,omitempty" gorm:"many2many:post_tags;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一篇文章可以有多个评论
 	Comments []Comment `json:"comments,omitempty" gorm:"foreignKey:PostID;references:ID;constraint:fk_comments_post_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Likes    []Like    `json:"likes,omitempty" gorm:"foreignKey:TargetID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一篇文章可以有多个点赞
+	Likes []Like `json:"likes,omitempty" gorm:"foreignKey:TargetID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Comment 评论模型
@@ -113,9 +126,13 @@ type Comment struct {
 	ParentID  *uint  `json:"parent_id" gorm:"index"` // 支持回复评论
 
 	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
-	Post    Post      `json:"post,omitempty" gorm:"foreignKey:PostID;references:ID;constraint:fk_comments_post_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	User    User      `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_comments_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Parent  *Comment  `json:"parent,omitempty" gorm:"foreignKey:ParentID;references:ID;constraint:fk_comments_parent_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一个评论只能属于一个文章
+	Post Post `json:"post,omitempty" gorm:"foreignKey:PostID;references:ID;constraint:fk_comments_post_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一个评论只能属于一个用户
+	User User `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_comments_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一个评论可以有多个回复
+	Parent *Comment `json:"parent,omitempty" gorm:"foreignKey:ParentID;references:ID;constraint:fk_comments_parent_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	// 一个评论可以有多个回复
 	Replies []Comment `json:"replies,omitempty" gorm:"foreignKey:ParentID;references:ID;constraint:fk_comments_parent_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
@@ -127,6 +144,7 @@ type Like struct {
 	TargetType string `json:"target_type" gorm:"size:20;not null;index" validate:"oneof=post comment"`
 
 	// 关联关系 - 修复外键约束名称重复问题，为每个外键指定唯一名称
+	// 一个点赞只能属于一个用户
 	User User `json:"user,omitempty" gorm:"foreignKey:UserID;references:ID;constraint:fk_likes_user_id,OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
 	// 复合唯一索引，防止重复点赞
@@ -184,7 +202,7 @@ func (p *Post) AfterCreate(tx *gorm.DB) error {
 func (p *Post) AfterDelete(tx *gorm.DB) error {
 	// 更新分类的文章数量
 	if p.CategoryID != nil {
-		tx.Model(&Category{}).Where("id = ?", *p.CategoryID).UpdateColumn("post_count", gorm.Expr("post_count - ?", 1))
+		tx.Model(&Category{}).Where("id = ?", *p.CategoryID).UpdateColumn("PostCount", gorm.Expr("PostCount - ?", 1))
 	}
 	return nil
 }
