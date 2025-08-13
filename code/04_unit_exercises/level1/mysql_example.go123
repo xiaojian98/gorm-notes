@@ -1,0 +1,386 @@
+// MySQL使用示例
+// 本文件展示如何在实际项目中使用GORM的MySQL支持
+// 注意：此文件依赖于level1_basic.go中定义的函数，建议将其作为包使用
+
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
+)
+
+// 为了让此文件能够独立运行，这里重新定义必要的类型和函数
+// 在实际项目中，建议将这些定义放在单独的包中
+
+// DatabaseType 数据库类型枚举
+type DatabaseType string
+
+const (
+	SQLite DatabaseType = "sqlite"
+	MySQL  DatabaseType = "mysql"
+)
+
+// DatabaseConfig 数据库配置结构
+type DatabaseConfig struct {
+	Type         DatabaseType
+	DSN          string
+	MaxOpenConns int
+	MaxIdleConns int
+	MaxLifetime  time.Duration
+	LogLevel     logger.LogLevel
+}
+
+// BaseModel 基础模型
+type BaseModel struct {
+	ID        uint           `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+}
+
+// User 用户模型
+type User struct {
+	BaseModel
+	Username string `gorm:"uniqueIndex;size:50;not null" json:"username"`
+	Email    string `gorm:"uniqueIndex;size:100;not null" json:"email"`
+	Password string `gorm:"size:255;not null" json:"-"`
+	Age      int    `gorm:"check:age >= 0 AND age <= 150" json:"age"`
+	IsActive bool   `gorm:"default:true" json:"is_active"`
+}
+
+// TableName 自定义表名
+func (User) TableName() string {
+	return "users"
+}
+
+// GetMySQLConfig 获取MySQL配置
+func GetMySQLConfig(dsn string) *DatabaseConfig {
+	return &DatabaseConfig{
+		Type:         MySQL,
+		DSN:          dsn,
+		MaxOpenConns: 20,
+		MaxIdleConns: 10,
+		MaxLifetime:  time.Hour,
+		LogLevel:     logger.Info,
+	}
+}
+
+// InitDatabase 初始化数据库连接
+func InitDatabase(config *DatabaseConfig) (*gorm.DB, error) {
+	newLogger := logger.New(
+		log.New(log.Writer(), "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             time.Second,
+			LogLevel:                  config.LogLevel,
+			IgnoreRecordNotFoundError: true,
+			ParameterizedQueries:      true,
+			Colorful:                  true,
+		},
+	)
+
+	var dialector gorm.Dialector
+	switch config.Type {
+	case SQLite:
+		dialector = sqlite.Open(config.DSN)
+	case MySQL:
+		dialector = mysql.Open(config.DSN)
+	default:
+		return nil, fmt.Errorf("unsupported database type: %s", config.Type)
+	}
+
+	db, err := gorm.Open(dialector, &gorm.Config{
+		Logger:                                   newLogger,
+		DisableForeignKeyConstraintWhenMigrating: true,
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   "t_",
+			SingularTable: false,
+		},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect database: %w", err)
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get sql.DB: %w", err)
+	}
+
+	sqlDB.SetMaxOpenConns(config.MaxOpenConns)
+	sqlDB.SetMaxIdleConns(config.MaxIdleConns)
+	sqlDB.SetConnMaxLifetime(config.MaxLifetime)
+
+	return db, nil
+}
+
+// TestConnection 测试数据库连接
+func TestConnection(db *gorm.DB) error {
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+	return sqlDB.Ping()
+}
+
+// AutoMigrate 自动迁移
+func AutoMigrate(db *gorm.DB) error {
+	return db.AutoMigrate(&User{})
+}
+
+// CreateUser 创建用户
+func CreateUser(db *gorm.DB, username, email, password string, age int) (*User, error) {
+	user := &User{
+		Username: username,
+		Email:    email,
+		Password: password,
+		Age:      age,
+		IsActive: true,
+	}
+
+	result := db.Create(user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	fmt.Printf("创建用户成功，ID: %d, 影响行数: %d\n", user.ID, result.RowsAffected)
+	return user, nil
+}
+
+// FindActiveUsers 查找活跃用户
+func FindActiveUsers(db *gorm.DB) ([]User, error) {
+	var users []User
+	result := db.Where("is_active = ?", true).Find(&users)
+	return users, result.Error
+}
+
+// CountUsersByAge 统计不同年龄段的用户数量
+func CountUsersByAge(db *gorm.DB) (map[string]int64, error) {
+	type AgeGroup struct {
+		AgeRange string
+		Count    int64
+	}
+
+	var results []AgeGroup
+	err := db.Model(&User{}).Select(
+		"CASE WHEN age < 18 THEN 'under_18' WHEN age BETWEEN 18 AND 30 THEN '18_30' WHEN age BETWEEN 31 AND 50 THEN '31_50' ELSE 'over_50' END as age_range, COUNT(*) as count",
+	).Group("age_range").Scan(&results).Error
+	if err != nil {
+		return nil, err
+	}
+
+	counts := make(map[string]int64)
+	for _, result := range results {
+		counts[result.AgeRange] = result.Count
+	}
+
+	return counts, nil
+}
+
+// GetAllUsers 获取所有用户（分页）
+func GetAllUsers(db *gorm.DB, page, pageSize int) ([]User, int64, error) {
+	var users []User
+	var total int64
+
+	db.Model(&User{}).Count(&total)
+
+	offset := (page - 1) * pageSize
+	result := db.Offset(offset).Limit(pageSize).Find(&users)
+	if result.Error != nil {
+		return nil, 0, result.Error
+	}
+
+	return users, total, nil
+}
+
+// GetConnectionStats 获取连接池统计信息
+func GetConnectionStats(db *gorm.DB) map[string]interface{} {
+	sqlDB, err := db.DB()
+	if err != nil {
+		return map[string]interface{}{"error": err.Error()}
+	}
+
+	stats := sqlDB.Stats()
+	return map[string]interface{}{
+		"max_open_connections": stats.MaxOpenConnections,
+		"open_connections":     stats.OpenConnections,
+		"in_use":               stats.InUse,
+		"idle":                 stats.Idle,
+		"wait_count":           stats.WaitCount,
+		"wait_duration":        stats.WaitDuration,
+		"max_idle_closed":      stats.MaxIdleClosed,
+		"max_idle_time_closed": stats.MaxIdleTimeClosed,
+		"max_lifetime_closed":  stats.MaxLifetimeClosed,
+	}
+}
+
+// MySQLExample MySQL使用示例
+// 演示如何在实际项目中配置和使用MySQL数据库
+func MySQLExample() {
+	fmt.Println("=== MySQL 实际使用示例 ===")
+
+	// 1. 从环境变量获取数据库配置（推荐的生产环境做法）
+	mysqlDSN := os.Getenv("MYSQL_DSN")
+	if mysqlDSN == "" {
+		// 如果环境变量未设置，使用默认配置
+		mysqlDSN = "root:password@tcp(localhost:3306)/gorm_test?charset=utf8mb4&parseTime=True&loc=Local"
+		fmt.Println("使用默认MySQL配置，建议设置MYSQL_DSN环境变量")
+	}
+
+	// 2. 创建MySQL配置
+	config := GetMySQLConfig(mysqlDSN)
+	
+	// 3. 根据环境调整连接池参数
+	env := os.Getenv("APP_ENV")
+	switch env {
+	case "production":
+		// 生产环境：更大的连接池
+		config.MaxOpenConns = 50
+		config.MaxIdleConns = 25
+	case "development":
+		// 开发环境：较小的连接池
+		config.MaxOpenConns = 10
+		config.MaxIdleConns = 5
+	default:
+		// 测试环境：最小连接池
+		config.MaxOpenConns = 5
+		config.MaxIdleConns = 2
+	}
+
+	// 4. 初始化数据库连接
+	db, err := InitDatabase(config)
+	if err != nil {
+		log.Printf("MySQL连接失败: %v", err)
+		return
+	}
+	defer func() {
+		sqlDB, _ := db.DB()
+		sqlDB.Close()
+	}()
+
+	// 5. 测试连接
+	if err := TestConnection(db); err != nil {
+		log.Printf("MySQL连接测试失败: %v", err)
+		return
+	}
+	fmt.Println("✓ MySQL连接成功")
+
+	// 6. 执行数据库迁移
+	if err := AutoMigrate(db); err != nil {
+		log.Printf("数据库迁移失败: %v", err)
+		return
+	}
+	fmt.Println("✓ 数据库迁移完成")
+
+	// 7. 业务逻辑示例
+	if err := businessLogicExample(db); err != nil {
+		log.Printf("业务逻辑执行失败: %v", err)
+		return
+	}
+
+	// 8. 显示连接池状态
+	displayConnectionStats(db)
+
+	fmt.Println("✓ MySQL示例执行完成")
+}
+
+// businessLogicExample 业务逻辑示例
+// 演示在实际业务中如何使用数据库操作
+func businessLogicExample(db *gorm.DB) error {
+	fmt.Println("\n=== 业务逻辑示例 ===")
+
+	// 1. 创建用户
+	users := []struct {
+		username, email string
+		age             int
+	}{
+		{"john_doe", "john@example.com", 25},
+		{"jane_smith", "jane@example.com", 30},
+		{"bob_wilson", "bob@example.com", 35},
+	}
+
+	for _, userData := range users {
+		user, err := CreateUser(db, userData.username, userData.email, "password123", userData.age)
+		if err != nil {
+			// 如果用户已存在，跳过
+			if err.Error() == "UNIQUE constraint failed: users.email" ||
+				err.Error() == "Error 1062: Duplicate entry" {
+				fmt.Printf("用户 %s 已存在，跳过创建\n", userData.username)
+				continue
+			}
+			return fmt.Errorf("创建用户失败: %w", err)
+		}
+		fmt.Printf("✓ 创建用户: %s (ID: %d)\n", user.Username, user.ID)
+	}
+
+	// 2. 查询和统计
+	activeUsers, err := FindActiveUsers(db)
+	if err != nil {
+		return fmt.Errorf("查询活跃用户失败: %w", err)
+	}
+	fmt.Printf("✓ 活跃用户数量: %d\n", len(activeUsers))
+
+	// 3. 年龄统计
+	ageCounts, err := CountUsersByAge(db)
+	if err != nil {
+		return fmt.Errorf("年龄统计失败: %w", err)
+	}
+	fmt.Printf("✓ 年龄分布: %+v\n", ageCounts)
+
+	// 4. 分页查询
+	allUsers, total, err := GetAllUsers(db, 1, 10)
+	if err != nil {
+		return fmt.Errorf("分页查询失败: %w", err)
+	}
+	fmt.Printf("✓ 总用户数: %d, 当前页: %d\n", total, len(allUsers))
+
+	return nil
+}
+
+// displayConnectionStats 显示连接池统计信息
+// 用于监控数据库连接状态
+func displayConnectionStats(db *gorm.DB) {
+	fmt.Println("\n=== 连接池统计信息 ===")
+	stats := GetConnectionStats(db)
+	
+	// 格式化显示重要指标
+	fmt.Printf("最大连接数: %v\n", stats["max_open_connections"])
+	fmt.Printf("当前连接数: %v\n", stats["open_connections"])
+	fmt.Printf("使用中连接: %v\n", stats["in_use"])
+	fmt.Printf("空闲连接数: %v\n", stats["idle"])
+	fmt.Printf("等待次数: %v\n", stats["wait_count"])
+	fmt.Printf("等待时长: %v\n", stats["wait_duration"])
+}
+
+// setupEnvironment 设置环境变量示例
+// 在实际项目中，这些通常在部署时设置
+func setupEnvironment() {
+	fmt.Println("=== 环境变量设置示例 ===")
+	fmt.Println("在实际项目中，请设置以下环境变量:")
+	fmt.Println("")
+	fmt.Println("# 数据库连接")
+	fmt.Println("export MYSQL_DSN=\"user:password@tcp(localhost:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local\"")
+	fmt.Println("")
+	fmt.Println("# 应用环境")
+	fmt.Println("export APP_ENV=\"development\"  # 或 production, testing")
+	fmt.Println("")
+	fmt.Println("Windows PowerShell:")
+	fmt.Println("$env:MYSQL_DSN=\"user:password@tcp(localhost:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local\"")
+	fmt.Println("$env:APP_ENV=\"development\"")
+	fmt.Println("")
+}
+
+// main 函数 - 如果直接运行此文件
+func main() {
+	// 显示环境变量设置说明
+	setupEnvironment()
+	
+	// 运行MySQL示例
+	MySQLExample()
+}

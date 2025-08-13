@@ -7,6 +7,7 @@ import (
 	"log"
 	"time"
 
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -15,13 +16,23 @@ import (
 
 // 练习1：数据库连接和基本配置
 
+// DatabaseType 数据库类型枚举
+type DatabaseType string
+
+const (
+	SQLite DatabaseType = "sqlite"
+	MySQL  DatabaseType = "mysql"
+)
+
 // DatabaseConfig 数据库配置结构
+// Type: 数据库类型(sqlite/mysql)
 // DSN: 数据源名称,用于指定数据库连接字符串
 // MaxOpenConns: 最大打开连接数
 // MaxIdleConns: 最大空闲连接数
 // MaxLifetime: 连接最大生命周期
 // LogLevel: 日志级别
 type DatabaseConfig struct {
+	Type         DatabaseType
 	DSN          string
 	MaxOpenConns int
 	MaxIdleConns int
@@ -29,8 +40,8 @@ type DatabaseConfig struct {
 	LogLevel     logger.LogLevel
 }
 
-// GetDefaultConfig 获取默认配置
-// 返回一个包含默认参数的数据库配置对象:
+// GetDefaultConfig 获取SQLite默认配置
+// 返回一个包含默认参数的SQLite数据库配置对象:
 // - 使用SQLite数据库,文件名为test.db
 // - 最大连接数10
 // - 最大空闲连接5
@@ -38,9 +49,29 @@ type DatabaseConfig struct {
 // - 日志级别为Info
 func GetDefaultConfig() *DatabaseConfig {
 	return &DatabaseConfig{
+		Type:         SQLite,
 		DSN:          "test.db",
 		MaxOpenConns: 10,
 		MaxIdleConns: 5,
+		MaxLifetime:  time.Hour,
+		LogLevel:     logger.Info,
+	}
+}
+
+// GetMySQLConfig 获取MySQL默认配置
+// 返回一个包含默认参数的MySQL数据库配置对象:
+// - 使用MySQL数据库
+// - 默认连接字符串需要用户自定义
+// - 最大连接数20
+// - 最大空闲连接10
+// - 连接生命周期1小时
+// - 日志级别为Info
+func GetMySQLConfig(dsn string) *DatabaseConfig {
+	return &DatabaseConfig{
+		Type:         MySQL,
+		DSN:          dsn,
+		MaxOpenConns: 20,
+		MaxIdleConns: 10,
 		MaxLifetime:  time.Hour,
 		LogLevel:     logger.Info,
 	}
@@ -56,7 +87,7 @@ func InitDatabase(config *DatabaseConfig) (*gorm.DB, error) {
 	// - 设置慢查询阈值为1秒
 	// - 忽略记录未找到的错误
 	// - 启用参数化查询
-	// - 关闭彩色输出
+	// - 开启彩色输出
 	newLogger := logger.New(
 		log.New(log.Writer(), "\r\n", log.LstdFlags),
 		logger.Config{
@@ -64,16 +95,27 @@ func InitDatabase(config *DatabaseConfig) (*gorm.DB, error) {
 			LogLevel:                  config.LogLevel,
 			IgnoreRecordNotFoundError: true,
 			ParameterizedQueries:      true,
-			Colorful:                  false,
+			Colorful:                  true,
 		},
 	)
+
+	// 根据数据库类型选择相应的驱动程序
+	var dialector gorm.Dialector
+	switch config.Type {
+	case SQLite:
+		dialector = sqlite.Open(config.DSN)
+	case MySQL:
+		dialector = mysql.Open(config.DSN)
+	default:
+		return nil, fmt.Errorf("unsupported database type: %s", config.Type)
+	}
 
 	// 打开数据库连接
 	// 配置:
 	// - 禁用外键约束
 	// - 表名前缀为t_
 	// - 使用复数表名
-	db, err := gorm.Open(sqlite.Open(config.DSN), &gorm.Config{
+	db, err := gorm.Open(dialector, &gorm.Config{
 		Logger:                                   newLogger,
 		DisableForeignKeyConstraintWhenMigrating: true,
 		NamingStrategy: schema.NamingStrategy{
@@ -165,8 +207,8 @@ type BaseModel struct {
 // - IsActive: 是否活跃,默认true
 type User struct {
 	BaseModel
-	Username string `gorm:"uniqueIndex;size:50;not null" json:"username"`
-	Email    string `gorm:"uniqueIndex;size:100;not null" json:"email"`
+	Username string `gorm:"size:50;not null;uniqueIndex:idx_users_username_email" json:"username"`
+	Email    string `gorm:"size:100;not null;uniqueIndex:idx_users_username_email" json:"email"`
 	Password string `gorm:"size:255;not null" json:"-"`
 	Age      int    `gorm:"check:age >= 0 AND age <= 150" json:"age"`
 	IsActive bool   `gorm:"default:true" json:"is_active"`
@@ -406,29 +448,95 @@ func AutoMigrate(db *gorm.DB) error {
 // - 用户表的username和email复合索引
 // - 用户表is_active字段的条件索引
 func CreateIndexes(db *gorm.DB) error {
-	// 创建复合索引
-	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_users_username_email ON users(username, email)").Error; err != nil {
-		return err
+	// 检查索引是否存在，不存在再创建
+	if !db.Migrator().HasIndex(&User{}, "idx_users_username_email") {
+		err := db.Migrator().CreateIndex(&User{}, "idx_users_username_email")
+		if err != nil {
+			log.Fatalf("创建索引失败: %v", err)
+			return err
+		}
+		fmt.Println("索引创建成功")
+	} else {
+		fmt.Println("索引已存在，跳过创建")
 	}
+	// // 创建复合索引
+	// if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_users_username_email ON users(username, email)").Error; err != nil {
+	// 	return err
+	// }
 
-	// 创建条件索引
-	if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_users_active ON users(is_active) WHERE is_active = true").Error; err != nil {
-		return err
-	}
+	// // 创建条件索引
+	// if err := db.Exec("CREATE INDEX IF NOT EXISTS idx_users_active ON users(is_active) WHERE is_active = true").Error; err != nil {
+	// 	return err
+	// }
 
 	return nil
+}
+
+// DemoMySQL 演示MySQL数据库连接
+// 注意：使用前需要确保MySQL服务已启动，并创建相应的数据库
+func DemoMySQL() {
+	fmt.Println("\n=== MySQL 数据库连接演示 ===")
+
+	// MySQL连接字符串示例
+	// 格式: username:password@tcp(localhost:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local
+	mysqlDSN := "root:123456@tcp(192.168.100.124:3306)/gorm_test?charset=utf8mb4&parseTime=True&loc=Local"
+
+	// 获取MySQL配置
+	mysqlConfig := GetMySQLConfig(mysqlDSN)
+
+	// 尝试连接MySQL
+	mysqlDB, err := InitDatabase(mysqlConfig)
+	if err != nil {
+		fmt.Printf("MySQL连接失败: %v\n", err)
+		fmt.Println("请确保:")
+		fmt.Println("1. MySQL服务已启动")
+		fmt.Println("2. 数据库gorm_test已创建")
+		fmt.Println("3. 用户名密码正确")
+		return
+	}
+
+	// 测试MySQL连接
+	if err := TestConnection(mysqlDB); err != nil {
+		fmt.Printf("MySQL连接测试失败: %v\n", err)
+		return
+	}
+	fmt.Println("✓ MySQL数据库连接成功")
+
+	// 自动迁移
+	if err := AutoMigrate(mysqlDB); err != nil {
+		fmt.Printf("MySQL数据库迁移失败: %v\n", err)
+		return
+	}
+	fmt.Println("✓ MySQL数据库迁移完成")
+
+	// 创建测试用户
+	user, err := CreateUser(mysqlDB, "mysql_user", "mysql@example.com", "password123", 28)
+	if err != nil {
+		fmt.Printf("MySQL创建用户失败: %v\n", err)
+		return
+	}
+	fmt.Printf("✓ MySQL创建用户成功: %+v\n", user)
+
+	// 获取连接池统计
+	stats := GetConnectionStats(mysqlDB)
+	fmt.Println("\n=== MySQL连接池统计 ===")
+	for key, value := range stats {
+		fmt.Printf("%s: %v\n", key, value)
+	}
 }
 
 // main函数
 // 演示所有功能的使用方法
 func main() {
 	fmt.Println("=== GORM Level 1 基础练习 ===")
+	mysqlDSN := "root:123456@tcp(192.168.100.124:3306)/gorm_test?charset=utf8mb4&parseTime=True&loc=Local"
+	// 1. 初始化SQLite数据库
+	// config := GetDefaultConfig()
+	config := GetMySQLConfig(mysqlDSN)
 
-	// 1. 初始化数据库
-	config := GetDefaultConfig()
 	db, err := InitDatabase(config)
 	if err != nil {
-		log.Fatal("数据库连接失败:", err)
+		log.Fatal("SQLite数据库连接失败:", err)
 	}
 
 	// 测试连接
@@ -535,5 +643,11 @@ func main() {
 		fmt.Printf("%s: %v\n", key, value)
 	}
 
-	fmt.Println("\n=== Level 1 练习完成 ===")
+	fmt.Println("\n=== Level 1 SQLite练习完成 ===")
+
+	// 8. MySQL数据库演示（可选）
+	// 注意：需要先安装和配置MySQL服务
+	// DemoMySQL()
+
+	fmt.Println("\n=== Level 1 全部练习完成 ===")
 }
