@@ -1,0 +1,437 @@
+Starting: E:\CodePath\go\GoEV\GoPath\bin\dlv.exe dap --check-go-version=false --listen=127.0.0.1:14883 from F:\Study\GO\Gorm\gorm\gorm-note/code/04_unit_exercises/level3
+DAP server listening at: 127.0.0.1:14883
+Type 'dlv help' for list of commands.
+=== GORM Level 3 高级查询练习 ===
+
+2025/08/16 16:26:45 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[2.413ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 16:26:45 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[7.375ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 16:26:45 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[5.132ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'users' AND table_type = 'BASE TABLE'
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299 SLOW SQL >= 200ms
+[310.233ms] [rows:0] CREATE TABLE `users` (`id` bigint unsigned AUTO_INCREMENT,`created_at` datetime(3) NULL,`updated_at` datetime(3) NULL,`deleted_at` datetime(3) NULL,`username` varchar(50) NOT NULL,`email` varchar(100) NOT NULL,`age` bigint,`city` varchar(100),`salary` decimal(10, 2),`join_date` datetime(3) NULL,`is_active` boolean DEFAULT true,PRIMARY KEY (`id`),INDEX `idx_users_deleted_at` (`deleted_at`),UNIQUE INDEX `idx_users_username` (`username`),UNIQUE INDEX `idx_users_email` (`email`),INDEX `idx_users_city` (`city`),INDEX `idx_users_join_date` (`join_date`),INDEX `idx_users_is_active` (`is_active`),CONSTRAINT `chk_users_age` CHECK (age >= 0 AND age <= 150))
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[1.768ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[6.475ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[6.318ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'categories' AND table_type = 'BASE TABLE'
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299 SLOW SQL >= 200ms
+[294.328ms] [rows:0] CREATE TABLE `categories` (`id` bigint unsigned AUTO_INCREMENT,`created_at` datetime(3) NULL,`updated_at` datetime(3) NULL,`deleted_at` datetime(3) NULL,`name` varchar(100) NOT NULL,`slug` varchar(100) NOT NULL,`description` text,`is_active` boolean DEFAULT true,PRIMARY KEY (`id`),INDEX `idx_categories_deleted_at` (`deleted_at`),INDEX `idx_categories_name` (`name`),UNIQUE INDEX `idx_categories_slug` (`slug`),INDEX `idx_categories_is_active` (`is_active`))
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[1.526ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[6.224ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[5.622ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'posts' AND table_type = 'BASE TABLE'
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299 SLOW SQL >= 200ms
+[340.464ms] [rows:0] CREATE TABLE `posts` (`id` bigint unsigned AUTO_INCREMENT,`created_at` datetime(3) NULL,`updated_at` datetime(3) NULL,`deleted_at` datetime(3) NULL,`title` varchar(200) NOT NULL,`content` text NOT NULL,`status` varchar(20) DEFAULT 'draft',`view_count` bigint DEFAULT 0,`like_count` bigint DEFAULT 0,`published_at` datetime(3) NULL,`rating` decimal(3, 2) DEFAULT 0,`author_id` bigint unsigned NOT NULL,`category_id` bigint unsigned,PRIMARY KEY (`id`),INDEX `idx_posts_like_count` (`like_count`),INDEX `idx_posts_published_at` (`published_at`),INDEX `idx_posts_author_id` (`author_id`),INDEX `idx_posts_category_id` (`category_id`),INDEX `idx_posts_deleted_at` (`deleted_at`),INDEX `idx_posts_title` (`title`),INDEX `idx_posts_status` (`status`),INDEX `idx_posts_view_count` (`view_count`),CONSTRAINT `fk_users_posts` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`),CONSTRAINT `fk_categories_posts` FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`))
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[1.505ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[7.831ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 16:26:46 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[6.642ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'tags' AND table_type = 'BASE TABLE'
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299 SLOW SQL >= 200ms
+[227.593ms] [rows:0] CREATE TABLE `tags` (`id` bigint unsigned AUTO_INCREMENT,`created_at` datetime(3) NULL,`updated_at` datetime(3) NULL,`deleted_at` datetime(3) NULL,`name` varchar(50) NOT NULL,`slug` varchar(50) NOT NULL,`is_active` boolean DEFAULT true,PRIMARY KEY (`id`),UNIQUE INDEX `idx_tags_slug` (`slug`),INDEX `idx_tags_deleted_at` (`deleted_at`),UNIQUE INDEX `idx_tags_name` (`name`))
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[4.510ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[6.903ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[5.871ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'post_tags' AND table_type = 'BASE TABLE'
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299 SLOW SQL >= 200ms
+[236.926ms] [rows:0] CREATE TABLE `post_tags` (`tag_id` bigint unsigned,`post_id` bigint unsigned,PRIMARY KEY (`tag_id`,`post_id`),CONSTRAINT `fk_post_tags_tag` FOREIGN KEY (`tag_id`) REFERENCES `tags`(`id`),CONSTRAINT `fk_post_tags_post` FOREIGN KEY (`post_id`) REFERENCES `posts`(`id`))
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[7.211ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[7.330ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299
+[10.108ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'comments' AND table_type = 'BASE TABLE'
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:299 SLOW SQL >= 200ms
+[262.884ms] [rows:0] CREATE TABLE `comments` (`id` bigint unsigned AUTO_INCREMENT,`created_at` datetime(3) NULL,`updated_at` datetime(3) NULL,`deleted_at` datetime(3) NULL,`content` text NOT NULL,`status` varchar(20) DEFAULT 'pending',`like_count` bigint DEFAULT 0,`post_id` bigint unsigned NOT NULL,`author_id` bigint unsigned NOT NULL,PRIMARY KEY (`id`),INDEX `idx_comments_author_id` (`author_id`),INDEX `idx_comments_deleted_at` (`deleted_at`),INDEX `idx_comments_status` (`status`),INDEX `idx_comments_post_id` (`post_id`),CONSTRAINT `fk_posts_comments` FOREIGN KEY (`post_id`) REFERENCES `posts`(`id`),CONSTRAINT `fk_users_comments` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`))
+数据库连接成功 - 类型: mysql
+✓ MySQL数据库初始化完成
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:324
+[88.160ms] [rows:5] INSERT INTO `users` (`created_at`,`updated_at`,`deleted_at`,`username`,`email`,`age`,`city`,`salary`,`join_date`,`is_active`) VALUES ('2025-08-16 16:26:47.559','2025-08-16 16:26:47.559',NULL,'alice','alice@example.com',25,'北京',8000,'2024-08-16 16:26:47.556',true),('2025-08-16 16:26:47.559','2025-08-16 16:26:47.559',NULL,'bob','bob@example.com',30,'上海',12000,'2023-08-16 16:26:47.556',true),('2025-08-16 16:26:47.559','2025-08-16 16:26:47.559',NULL,'charlie','charlie@example.com',28,'深圳',10000,'2024-02-16 16:26:47.556',true),('2025-08-16 16:26:47.559','2025-08-16 16:26:47.559',NULL,'diana','diana@example.com',35,'北京',15000,'2022-08-16 16:26:47.556',true),('2025-08-16 16:26:47.559','2025-08-16 16:26:47.559',NULL,'eve','eve@example.com',22,'广州',6000,'2025-05-16 16:26:47.556',true)
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:335
+[44.278ms] [rows:4] INSERT INTO `categories` (`created_at`,`updated_at`,`deleted_at`,`name`,`slug`,`description`,`is_active`) VALUES ('2025-08-16 16:26:47.647','2025-08-16 16:26:47.647',NULL,'技术','tech','技术相关文章',true),('2025-08-16 16:26:47.647','2025-08-16 16:26:47.647',NULL,'生活','life','生活分享',true),('2025-08-16 16:26:47.647','2025-08-16 16:26:47.647',NULL,'旅游','travel','旅游攻略',true),('2025-08-16 16:26:47.647','2025-08-16 16:26:47.647',NULL,'美食','food','美食推荐',true)
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:347
+[54.876ms] [rows:5] INSERT INTO `tags` (`created_at`,`updated_at`,`deleted_at`,`name`,`slug`,`is_active`) VALUES ('2025-08-16 16:26:47.693','2025-08-16 16:26:47.693',NULL,'Go','go',true),('2025-08-16 16:26:47.693','2025-08-16 16:26:47.693',NULL,'数据库','database',true),('2025-08-16 16:26:47.693','2025-08-16 16:26:47.693',NULL,'前端','frontend',true),('2025-08-16 16:26:47.693','2025-08-16 16:26:47.693',NULL,'后端','backend',true),('2025-08-16 16:26:47.693','2025-08-16 16:26:47.693',NULL,'教程','tutorial',true)
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:360
+[54.381ms] [rows:6] INSERT INTO `posts` (`created_at`,`updated_at`,`deleted_at`,`title`,`content`,`status`,`view_count`,`like_count`,`published_at`,`rating`,`author_id`,`category_id`) VALUES ('2025-08-16 16:26:47.747','2025-08-16 16:26:47.747',NULL,'Go语言入门','Go语言基础教程...','published',1500,120,'2025-07-16 16:26:47.745',4.5,1,1),('2025-08-16 16:26:47.747','2025-08-16 16:26:47.747',NULL,'数据库设计原则','数据库设计的基本原则...','published',800,65,'2025-06-16 16:26:47.745',4.2,2,1),('2025-08-16 16:26:47.747','2025-08-16 16:26:47.747',NULL,'我的北京生活','在北京的生活感悟...','published',300,25,'2025-08-01 16:26:47.745',3.8,1,2),('2025-08-16 16:26:47.747','2025-08-16 16:26:47.747',NULL,'上海旅游攻略','上海必去景点推荐...','published',1200,95,'2025-07-17 16:26:47.745',4.7,3,3),('2025-08-16 16:26:47.747','2025-08-16 16:26:47.747',NULL,'React入门教程','React基础知识...','draft',0,0,NULL,0,4,1),('2025-08-16 16:26:47.747','2025-08-16 16:26:47.747',NULL,'深圳美食推荐','深圳好吃的餐厅...','published',600,40,'2025-08-09 16:26:47.745',4,5,4)
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:372
+[89.564ms] [rows:5] INSERT INTO `comments` (`created_at`,`updated_at`,`deleted_at`,`content`,`status`,`like_count`,`post_id`,`author_id`) VALUES ('2025-08-16 16:26:47.803','2025-08-16 16:26:47.803',NULL,'很好的教程！','approved',10,1,2),('2025-08-16 16:26:47.803','2025-08-16 16:26:47.803',NULL,'学到了很多','approved',5,1,3),('2025-08-16 16:26:47.803','2025-08-16 16:26:47.803',NULL,'写得不错','approved',3,2,1),('2025-08-16 16:26:47.803','2025-08-16 16:26:47.803',NULL,'有用的信息','pending',0,3,4),('2025-08-16 16:26:47.803','2025-08-16 16:26:47.803',NULL,'期待更多内容','approved',8,4,5)
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:377
+[9.094ms] [rows:1] SELECT * FROM `posts` WHERE `posts`.`id` = 1 AND `posts`.`deleted_at` IS NULL ORDER BY `posts`.`id` LIMIT 1
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:378
+[7.561ms] [rows:1] SELECT * FROM `posts` WHERE `posts`.`id` = 2 AND `posts`.`deleted_at` IS NULL ORDER BY `posts`.`id` LIMIT 1
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:380
+[8.903ms] [rows:1] SELECT * FROM `tags` WHERE `tags`.`id` = 1 AND `tags`.`deleted_at` IS NULL ORDER BY `tags`.`id` LIMIT 1
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:381
+[8.720ms] [rows:1] SELECT * FROM `tags` WHERE `tags`.`id` = 2 AND `tags`.`deleted_at` IS NULL ORDER BY `tags`.`id` LIMIT 1
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:382
+[6.681ms] [rows:1] SELECT * FROM `tags` WHERE `tags`.`id` = 5 AND `tags`.`deleted_at` IS NULL ORDER BY `tags`.`id` LIMIT 1
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:384
+[5.900ms] [rows:0] INSERT INTO `tags` (`created_at`,`updated_at`,`deleted_at`,`name`,`slug`,`is_active`,`id`) VALUES ('2025-08-16 16:26:47.693','2025-08-16 16:26:47.693',NULL,'Go','go',true,1),('2025-08-16 16:26:47.693','2025-08-16 16:26:47.693',NULL,'教程','tutorial',true,5) ON DUPLICATE KEY UPDATE `id`=`id`
+
+2025/08/16 16:26:47 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:384
+[7.290ms] [rows:2] INSERT INTO `post_tags` (`post_id`,`tag_id`) VALUES (1,1),(1,5) ON DUPLICATE KEY UPDATE `post_id`=`post_id`
+
+2025/08/16 16:26:48 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:384
+[91.666ms] [rows:1] UPDATE `posts` SET `updated_at`='2025-08-16 16:26:47.934' WHERE `posts`.`deleted_at` IS NULL AND `id` = 1
+
+2025/08/16 16:26:48 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:386
+[7.323ms] [rows:0] INSERT INTO `tags` (`created_at`,`updated_at`,`deleted_at`,`name`,`slug`,`is_active`,`id`) VALUES ('2025-08-16 16:26:47.693','2025-08-16 16:26:47.693',NULL,'数据库','database',true,2),('2025-08-16 16:26:47.693','2025-08-16 16:26:47.693',NULL,'教程','tutorial',true,5) ON DUPLICATE KEY UPDATE `id`=`id`
+
+2025/08/16 16:26:48 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:386
+[7.282ms] [rows:2] INSERT INTO `post_tags` (`post_id`,`tag_id`) VALUES (2,2),(2,5) ON DUPLICATE KEY UPDATE `post_id`=`post_id`
+
+2025/08/16 16:26:48 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:386
+[44.530ms] [rows:1] UPDATE `posts` SET `updated_at`='2025-08-16 16:26:48.026' WHERE `posts`.`deleted_at` IS NULL AND `id` = 2
+✓ 测试数据创建完成
+
+=== 练习1：条件查询和排序 ===
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:415
+[8.251ms] [rows:3] SELECT * FROM `users` WHERE (age BETWEEN 20 AND 35) AND city IN ('北京','上海') AND is_active = true AND `users`.`deleted_at` IS NULL ORDER BY salary DESC, age ASC
+找到 3 个符合条件的用户:
+  - diana (35岁, 北京, 薪资: 15000)
+  - bob (30岁, 上海, 薪资: 12000)
+  - alice (25岁, 北京, 薪资: 8000)
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:439
+[6.888ms] [rows:4] SELECT * FROM `users` WHERE `users`.`id` IN (1,3,2,5) AND `users`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:439
+[8.171ms] [rows:4] SELECT * FROM `categories` WHERE `categories`.`id` IN (1,3,4,2) AND `categories`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:439
+[27.782ms] [rows:5] SELECT * FROM `posts` WHERE (published_at BETWEEN '2025-05-16 16:27:05.747' AND '2025-08-16 16:27:05.747') AND status = 'published' AND `posts`.`deleted_at` IS NULL ORDER BY view_count DESC
+
+最近3个月发布的文章 (5篇):
+  - Go语言入门 (浏览: 1500, 点赞: 120, 作者: alice)
+  - 上海旅游攻略 (浏览: 1200, 点赞: 95, 作者: charlie)
+  - 数据库设计原则 (浏览: 800, 点赞: 65, 作者: bob)
+  - 深圳美食推荐 (浏览: 600, 点赞: 40, 作者: eve)
+  - 我的北京生活 (浏览: 300, 点赞: 25, 作者: alice)
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:461
+[8.644ms] [rows:3] SELECT * FROM `users` WHERE `users`.`id` IN (3,1,2) AND `users`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:461
+[6.934ms] [rows:2] SELECT * FROM `categories` WHERE `categories`.`id` IN (3,1) AND `categories`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:461
+[23.407ms] [rows:3] SELECT * FROM `posts` WHERE (rating >= 4 AND status = 'published') AND `posts`.`deleted_at` IS NULL ORDER BY rating DESC, like_count DESC LIMIT 3
+
+高评分文章 (评分>=4.0, 前3篇):
+  - 上海旅游攻略 (评分: 4.7, 浏览: 1200)
+  - Go语言入门 (评分: 4.5, 浏览: 1500)
+  - 数据库设计原则 (评分: 4.2, 浏览: 800)
+
+=== 练习2：聚合查询 ===
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:496
+[4.042ms] [rows:5] SELECT 
+			u.id as user_id,
+			u.username,
+			COUNT(DISTINCT p.id) as post_count,        -- 统计用户发表的文章数量（去重）
+			COUNT(DISTINCT c.id) as comment_count,     -- 统计用户发表的评论数量（去重）
+			COALESCE(SUM(p.view_count), 0) as total_views,  -- 统计文章总浏览量，使用COALESCE处理NULL值
+			COALESCE(SUM(p.like_count), 0) as total_likes,  -- 统计文章总点赞数
+			COALESCE(AVG(p.rating), 0) as avg_rating        -- 计算文章平均评分
+		 FROM users u LEFT JOIN posts p ON u.id = p.author_id AND p.deleted_at IS NULL LEFT JOIN comments c ON u.id = c.author_id AND c.deleted_at IS NULL WHERE u.deleted_at IS NULL GROUP BY u.id, u.username ORDER BY total_views DESC
+用户统计信息:
+  - alice: 文章2篇, 评论1条, 总浏览1800, 总点赞145, 平均评分4.2
+  - charlie: 文章1篇, 评论1条, 总浏览1200, 总点赞95, 平均评分4.7
+  - bob: 文章1篇, 评论1条, 总浏览800, 总点赞65, 平均评分4.2
+  - eve: 文章1篇, 评论1条, 总浏览600, 总点赞40, 平均评分4.0
+  - diana: 文章1篇, 评论1条, 总浏览0, 总点赞0, 平均评分0.0
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:522
+[6.990ms] [rows:4] SELECT 
+			c.id as category_id,
+			c.name as category_name,
+			COUNT(p.id) as post_count,                     -- 统计分类下的文章数量
+			COALESCE(SUM(p.view_count), 0) as total_views, -- 统计分类下文章的总浏览量
+			COALESCE(AVG(p.rating), 0) as avg_rating       -- 计算分类下文章的平均评分
+		 FROM categories c LEFT JOIN posts p ON c.id = p.category_id AND p.deleted_at IS NULL AND p.status = 'published' WHERE c.deleted_at IS NULL AND c.is_active = true GROUP BY c.id, c.name ORDER BY post_count DESC
+
+分类统计信息:
+  - 技术: 文章2篇, 总浏览2300, 平均评分4.3
+  - 生活: 文章1篇, 总浏览300, 平均评分3.8
+  - 美食: 文章1篇, 总浏览600, 平均评分4.0
+  - 旅游: 文章1篇, 总浏览1200, 平均评分4.7
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:554 Error 1305 (42000): FUNCTION gorm_test.strftime does not exist
+[4.066ms] [rows:-] 
+		SELECT 
+			strftime('%Y', date) as year,   -- 提取年份
+			strftime('%m', date) as month,  -- 提取月份
+			COUNT(CASE WHEN type = 'post' THEN 1 END) as post_count,  -- 条件计数：文章数量
+			COUNT(CASE WHEN type = 'user' THEN 1 END) as user_count   -- 条件计数：用户数量
+		FROM (
+			-- 合并posts和users表的创建时间数据
+			SELECT created_at as date, 'post' as type FROM posts WHERE created_at >= '2025-02-16 16:27:05.81' AND deleted_at IS NULL
+			UNION ALL
+			SELECT created_at as date, 'user' as type FROM users WHERE created_at >= '2025-02-16 16:27:05.81' AND deleted_at IS NULL
+		) combined
+		GROUP BY year, month  -- 按年月分组
+		ORDER BY year DESC, month DESC  -- 按时间倒序排列
+	
+获取月度统计失败: Error 1305 (42000): FUNCTION gorm_test.strftime does not exist
+
+=== 练习3：子查询 ===
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:579
+[9.989ms] [rows:3] SELECT `u`.`id`,`u`.`created_at`,`u`.`updated_at`,`u`.`deleted_at`,`u`.`username`,`u`.`email`,`u`.`age`,`u`.`city`,`u`.`salary`,`u`.`join_date`,`u`.`is_active` FROM users u JOIN (SELECT author_id, COUNT(*) as post_count FROM `posts` WHERE deleted_at IS NULL AND status = 'published' GROUP BY `author_id` ORDER BY post_count DESC LIMIT 3) pc ON u.id = pc.author_id WHERE u.deleted_at IS NULL AND `u`.`deleted_at` IS NULL ORDER BY pc.post_count DESC
+发文最多的用户 (前3名):
+  - alice (北京)
+  - bob (上海)
+  - charlie (深圳)
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:592
+[5.715ms] [rows:1] SELECT AVG(view_count) FROM `posts` WHERE deleted_at IS NULL AND status = 'published'
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:599
+[8.283ms] [rows:2] SELECT * FROM `users` WHERE `users`.`id` IN (1,3) AND `users`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:599
+[6.135ms] [rows:2] SELECT * FROM `categories` WHERE `categories`.`id` IN (1,3) AND `categories`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:599
+[21.994ms] [rows:2] SELECT * FROM `posts` WHERE (view_count > 880 AND status = 'published') AND `posts`.`deleted_at` IS NULL ORDER BY view_count DESC
+
+浏览量高于平均值的文章 (2篇):
+  - Go语言入门 (浏览: 1500)
+  - 上海旅游攻略 (浏览: 1200)
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:613
+[4.880ms] [rows:0] SELECT * FROM `users` WHERE id NOT IN (SELECT DISTINCT author_id FROM `comments` WHERE deleted_at IS NULL) AND `users`.`deleted_at` IS NULL
+
+没有发表评论的用户 (0人):
+
+=== 练习4：复杂连接查询 ===
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:655
+[8.652ms] [rows:5] SELECT 
+			p.id,
+			p.title,
+			p.view_count,
+			p.like_count,
+			p.rating,
+			p.published_at,
+			u.username as author_name,     -- 作者用户名
+			u.city as author_city,         -- 作者城市
+			c.name as category_name,       -- 分类名称
+			COUNT(cm.id) as comment_count  -- 评论数量统计
+		 FROM posts p JOIN users u ON p.author_id = u.id LEFT JOIN categories c ON p.category_id = c.id LEFT JOIN comments cm ON p.id = cm.post_id AND cm.deleted_at IS NULL WHERE p.deleted_at IS NULL AND p.status = 'published' GROUP BY p.id, p.title, p.view_count, p.like_count, p.rating, p.published_at, u.username, u.city, c.name ORDER BY p.view_count DESC LIMIT 5
+文章详情 (包含作者和评论数):
+  - Go语言入门 (作者: alice, 分类: 技术, 评论: 2条)
+  - 上海旅游攻略 (作者: charlie, 分类: 旅游, 评论: 1条)
+  - 数据库设计原则 (作者: bob, 分类: 技术, 评论: 1条)
+  - 深圳美食推荐 (作者: eve, 分类: 美食, 评论: 0条)
+  - 我的北京生活 (作者: alice, 分类: 生活, 评论: 1条)
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:693
+[4.530ms] [rows:5] SELECT 
+			u.id,
+			u.username,
+			u.city,
+			u.join_date,
+			COUNT(DISTINCT p.id) as post_count,                    -- 发表文章数
+			COUNT(DISTINCT c.id) as comment_count,                 -- 发表评论数
+			COALESCE(SUM(p.view_count), 0) as total_post_views,    -- 文章总浏览量
+			COALESCE(SUM(p.like_count), 0) as total_post_likes,    -- 文章总点赞数
+			COALESCE(SUM(c.like_count), 0) as total_comment_likes, -- 评论总点赞数
+			COALESCE(AVG(p.rating), 0) as avg_post_rating,         -- 文章平均评分
+			(COUNT(DISTINCT p.id) + COUNT(DISTINCT c.id)) as total_activity  -- 总活跃度（文章+评论）
+		 FROM users u LEFT JOIN posts p ON u.id = p.author_id AND p.deleted_at IS NULL LEFT JOIN comments c ON u.id = c.author_id AND c.deleted_at IS NULL WHERE u.deleted_at IS NULL GROUP BY u.id, u.username, u.city, u.join_date HAVING total_activity > 0 ORDER BY total_activity DESC
+
+用户参与度报告:
+  - alice: 总活动3次 (文章2篇, 评论1条)
+  - bob: 总活动2次 (文章1篇, 评论1条)
+  - eve: 总活动2次 (文章1篇, 评论1条)
+  - diana: 总活动2次 (文章1篇, 评论1条)
+  - charlie: 总活动2次 (文章1篇, 评论1条)
+
+=== 练习5：窗口函数和排名 ===
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:711
+[4.018ms] [rows:1] SELECT VERSION()
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:797
+[8.296ms] [rows:5] 
+			SELECT 
+				category_name,
+				title,
+				view_count,
+				like_count,
+				rating,
+				@rank := CASE 
+					WHEN @prev_category = cat_id THEN @rank + 1
+					ELSE 1
+				END as rank_in_category,
+				@prev_category := cat_id
+			FROM (
+				SELECT 
+					p.title,
+					p.view_count,
+					p.like_count,
+					p.rating,
+					c.name as category_name,
+					c.id as cat_id
+				FROM posts p
+				JOIN categories c ON p.category_id = c.id
+				WHERE p.deleted_at IS NULL AND p.status = 'published'
+				  AND c.deleted_at IS NULL AND c.is_active = 1
+				ORDER BY c.id, p.view_count DESC
+			) ranked_posts
+			CROSS JOIN (SELECT @rank := 0, @prev_category := '') r
+			HAVING rank_in_category <= 2
+			ORDER BY category_name, rank_in_category
+		
+各分类热门文章 (前2名):
+  - [技术] Go语言入门 (浏览: 1500, 排名: 1)
+  - [技术] 数据库设计原则 (浏览: 800, 排名: 2)
+  - [旅游] 上海旅游攻略 (浏览: 1200, 排名: 1)
+  - [生活] 我的北京生活 (浏览: 300, 排名: 1)
+  - [美食] 深圳美食推荐 (浏览: 600, 排名: 1)
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:711
+[2.649ms] [rows:1] SELECT VERSION()
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:878
+[6.520ms] [rows:5] 
+			SELECT 
+				username,
+				city,
+				total_activity,
+				@activity_rank := @activity_rank + 1 as activity_rank,
+				@city_rank := CASE 
+					WHEN @prev_city = city THEN @city_rank + 1
+					ELSE 1
+				END as city_rank,
+				@prev_city := city,
+				-- 使用CASE WHEN根据排名分配徽章
+				CASE 
+					WHEN @activity_rank <= 3 THEN 'Gold'    -- 前3名获得金牌
+					WHEN @activity_rank <= 10 THEN 'Silver' -- 4-10名获得银牌
+					ELSE 'Bronze'                          -- 其他获得铜牌
+				END as badge
+			FROM (
+				SELECT 
+					u.username,
+					u.city,
+					(COUNT(DISTINCT p.id) + COUNT(DISTINCT c.id)) as total_activity
+				FROM users u
+				LEFT JOIN posts p ON u.id = p.author_id AND p.deleted_at IS NULL
+				LEFT JOIN comments c ON u.id = c.author_id AND c.deleted_at IS NULL
+				WHERE u.deleted_at IS NULL
+				GROUP BY u.id, u.username, u.city
+				HAVING (COUNT(DISTINCT p.id) + COUNT(DISTINCT c.id)) > 0
+				ORDER BY total_activity DESC, city
+			) user_activity
+			CROSS JOIN (SELECT @activity_rank := 0, @city_rank := 0, @prev_city := '') r
+			ORDER BY total_activity DESC
+		
+
+用户活跃度排名:
+  - alice (北京): 活动3次, 全站排名1, 城市排名1, 徽章: Gold
+  - bob (上海): 活动2次, 全站排名2, 城市排名1, 徽章: Gold
+  - charlie (深圳): 活动2次, 全站排名3, 城市排名1, 徽章: Gold
+  - diana (北京): 活动2次, 全站排名4, 城市排名1, 徽章: Silver
+  - eve (广州): 活动2次, 全站排名5, 城市排名1, 徽章: Silver
+
+=== 练习6：性能优化查询 ===
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:912
+[6.457ms] [rows:3] SELECT id, username, city FROM `users` WHERE `users`.`id` IN (5,1,3) AND `users`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:912
+[6.887ms] [rows:3] SELECT id, name, slug FROM `categories` WHERE `categories`.`id` IN (4,2,3) AND `categories`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:912
+[7.642ms] [rows:0] SELECT * FROM `post_tags` WHERE `post_tags`.`post_id` IN (6,3,4)
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:912
+[28.960ms] [rows:3] SELECT id, title, content, view_count, like_count, rating, published_at, author_id, category_id FROM `posts` WHERE status = 'published' AND `posts`.`deleted_at` IS NULL ORDER BY published_at DESC LIMIT 3
+优化预加载查询结果 (3篇文章):
+  - 深圳美食推荐 (作者: eve, 分类: 美食, 标签数: 0)
+  - 我的北京生活 (作者: alice, 分类: 生活, 标签数: 0)
+  - 上海旅游攻略 (作者: charlie, 分类: 旅游, 标签数: 0)
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:945
+[6.782ms] [rows:1] SELECT count(*) FROM `posts` WHERE status = 'published' AND `posts`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:961
+[8.027ms] [rows:3] SELECT id, username FROM `users` WHERE `users`.`id` IN (5,1,3) AND `users`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:961
+[5.759ms] [rows:3] SELECT id, name FROM `categories` WHERE `categories`.`id` IN (4,2,3) AND `categories`.`deleted_at` IS NULL
+
+2025/08/16 16:27:05 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level3/level3_advanced_queries.go:961
+[20.369ms] [rows:3] SELECT * FROM `posts` WHERE status = 'published' AND `posts`.`deleted_at` IS NULL ORDER BY published_at DESC LIMIT 3
+
+分页查询结果 (第1页, 每页3篇, 总共5篇):
+  - 深圳美食推荐 (作者: eve)
+  - 我的北京生活 (作者: alice)
+  - 上海旅游攻略 (作者: charlie)
+
+=== 数据库兼容性说明 ===
+本代码同时支持SQLite和MySQL数据库:
+- SQLite: 适合开发和测试环境，无需额外配置
+- MySQL: 适合生产环境，需要配置正确的DSN连接字符串
+- 窗口函数在SQLite 3.25+和MySQL 8.0+中支持
+- 如需切换数据库，请修改main函数中的数据库初始化代码
+
+=== Level 3 高级查询练习完成 ===
+
+练习总结:
+1. ✓ 条件查询和排序 - 掌握复杂WHERE条件和ORDER BY
+2. ✓ 聚合查询 - 掌握COUNT、SUM、AVG等聚合函数
+3. ✓ 子查询 - 掌握嵌套查询和EXISTS/NOT EXISTS
+4. ✓ 复杂连接查询 - 掌握多表JOIN和复杂关联
+5. ✓ 窗口函数和排名 - 掌握ROW_NUMBER()等窗口函数
+6. ✓ 性能优化查询 - 掌握预加载优化和分页查询
+
+恭喜！您已完成GORM高级查询的所有练习！
+Process 20696 has exited with status 0
+Detaching
+dlv dap (32420) exited with code: 0

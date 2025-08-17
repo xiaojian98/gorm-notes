@@ -1,0 +1,777 @@
+(TraeAI-5) F:\Study\GO\Gorm\gorm\gorm-note\code\04_unit_exercises\level4 [0:0] $ ./level4_transactions_hooks.exe
+=== GORM Level 4 事务和钩子练习 ===
+
+=== 数据库初始化演示 ===
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.552ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[9.638ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[12.484ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'users' AND table_type = 'BASE TABLE'
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.536ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[9.671ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.087ms] [rows:-] SELECT * FROM `users` LIMIT 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[13.773ms] [rows:-] SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gorm_test' AND table_name = 'users' ORDER BY ORDINAL_POSITION
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[52.961ms] [rows:0] ALTER TABLE `users` MODIFY COLUMN `is_active` boolean DEFAULT true
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.868ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.560ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.078ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'users' AND index_name = 'idx_users_deleted_at'
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.511ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.822ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.101ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'users' AND index_name = 'idx_users_username'
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.506ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.415ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.473ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'users' AND index_name = 'idx_users_email'
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[3.019ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.393ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.185ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'users' AND index_name = 'idx_users_phone'
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[1.536ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.685ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.332ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'users' AND index_name = 'idx_users_is_active'
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[3.512ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.903ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[8.153ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'accounts' AND table_type = 'BASE TABLE'
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.262ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[9.431ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.610ms] [rows:-] SELECT * FROM `accounts` LIMIT 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[15.858ms] [rows:-] SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gorm_test' AND table_name = 'accounts' ORDER BY ORDINAL_POSITION
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[27.654ms] [rows:0] ALTER TABLE `accounts` MODIFY COLUMN `balance` decimal(15, 2) NOT NULL DEFAULT 0
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[29.791ms] [rows:0] ALTER TABLE `accounts` MODIFY COLUMN `is_active` boolean DEFAULT true
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[34.070ms] [rows:0] ALTER TABLE `accounts` MODIFY COLUMN `daily_limit` decimal(15, 2) DEFAULT 10000
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[3.723ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.282ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.303ms] [rows:-] SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'gorm_test' AND table_name = 'accounts' AND constraint_name = 'fk_users_accounts'
+
+2025/08/16 20:56:01 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.744ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[8.504ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.433ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'accounts' AND index_name = 'idx_accounts_deleted_at'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.976ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.679ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.886ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'accounts' AND index_name = 'idx_accounts_user_id'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[3.079ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.420ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.295ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'accounts' AND index_name = 'idx_accounts_account_type'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[1.734ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.500ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.443ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'accounts' AND index_name = 'idx_accounts_is_active'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[1.521ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.231ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.085ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'transactions' AND table_type = 'BASE TABLE'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.965ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.358ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.525ms] [rows:-] SELECT * FROM `transactions` LIMIT 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[9.016ms] [rows:-] SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gorm_test' AND table_name = 'transactions' ORDER BY ORDINAL_POSITION
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[32.855ms] [rows:0] ALTER TABLE `transactions` MODIFY COLUMN `transfer_fee` decimal(15, 2) DEFAULT 0
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[32.884ms] [rows:0] ALTER TABLE `transactions` MODIFY COLUMN `exchange_rate` decimal(10, 6) DEFAULT 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.507ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.679ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.980ms] [rows:-] SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'gorm_test' AND table_name = 'transactions' AND constraint_name = 'fk_transactions_to_account'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.513ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.450ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.945ms] [rows:-] SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'gorm_test' AND table_name = 'transactions' AND constraint_name = 'fk_accounts_transactions'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.009ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.852ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.685ms] [rows:-] SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'gorm_test' AND table_name = 'transactions' AND constraint_name = 'fk_users_transactions'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.662ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.876ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.003ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'transactions' AND index_name = 'idx_transactions_status'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[3.014ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.697ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.316ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'transactions' AND index_name = 'idx_transactions_to_account_id'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.014ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.526ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.658ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'transactions' AND index_name = 'idx_transactions_deleted_at'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.231ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.692ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.023ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'transactions' AND index_name = 'idx_transactions_account_id'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.576ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[8.089ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.963ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'transactions' AND index_name = 'idx_transactions_user_id'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.660ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[8.139ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.638ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'transactions' AND index_name = 'idx_transactions_transaction_type'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.550ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.838ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.018ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'transactions' AND index_name = 'idx_transactions_reference'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.786ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.827ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.054ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'audit_logs' AND table_type = 'BASE TABLE'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.016ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.538ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[1.511ms] [rows:-] SELECT * FROM `audit_logs` LIMIT 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[14.829ms] [rows:-] SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gorm_test' AND table_name = 'audit_logs' ORDER BY ORDINAL_POSITION
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[3.483ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.188ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[9.861ms] [rows:-] SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'gorm_test' AND table_name = 'audit_logs' AND constraint_name = 'fk_users_audit_logs'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.246ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[11.064ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.804ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'audit_logs' AND index_name = 'idx_audit_logs_record_id'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[3.551ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.767ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.290ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'audit_logs' AND index_name = 'idx_audit_logs_deleted_at'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.797ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.910ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.450ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'audit_logs' AND index_name = 'idx_audit_logs_user_id'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.953ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[5.897ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.516ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'audit_logs' AND index_name = 'idx_audit_logs_action'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[1.683ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[8.394ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.802ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'audit_logs' AND index_name = 'idx_audit_logs_table_name'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[1.864ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.769ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[8.710ms] [rows:-] SELECT count(*) FROM information_schema.tables WHERE table_schema = 'gorm_test' AND table_name = 'notification_logs' AND table_type = 'BASE TABLE'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.561ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.856ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[4.026ms] [rows:-] SELECT * FROM `notification_logs` LIMIT 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[16.456ms] [rows:-] SELECT column_name, column_default, is_nullable = 'YES', data_type, character_maximum_length, column_type, column_key, extra, column_comment, numeric_precision, numeric_scale , datetime_precision FROM information_schema.columns WHERE table_schema = 'gorm_test' AND table_name = 'notification_logs' ORDER BY ORDINAL_POSITION
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.522ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.951ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.701ms] [rows:-] SELECT count(*) FROM INFORMATION_SCHEMA.table_constraints WHERE constraint_schema = 'gorm_test' AND table_name = 'notification_logs' AND constraint_name = 'fk_notification_logs_user'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.509ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.521ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.086ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'notification_logs' AND index_name = 'idx_notification_logs_deleted_at'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[2.350ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.289ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.457ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'notification_logs' AND index_name = 'idx_notification_logs_user_id'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[3.168ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[6.927ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[7.131ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'notification_logs' AND index_name = 'idx_notification_logs_type'
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[3.536ms] [rows:-] SELECT DATABASE()
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[8.342ms] [rows:1] SELECT SCHEMA_NAME from Information_schema.SCHEMATA where SCHEMA_NAME LIKE 'gorm_test%' ORDER BY SCHEMA_NAME='gorm_test' DESC,SCHEMA_NAME limit 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:683
+[10.779ms] [rows:-] SELECT count(*) FROM information_schema.statistics WHERE table_schema = 'gorm_test' AND table_name = 'notification_logs' AND index_name = 'idx_notification_logs_status'
+✓ MySQL数据库初始化完成
+
+=== 使用MySQL数据库进行业务演示 ===
+
+=== 演示1：创建用户和账户 ===
+[Hook] 用户创建前: alice
+[Hook] 用户创建后: alice (ID: 1)
+[Hook] 账户创建前: 用户ID 1, 类型 savings
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:369
+[12.877ms] [rows:1] SELECT count(*) FROM `accounts` WHERE (user_id = 1 AND account_type = 'savings' AND is_active = true) AND `accounts`.`deleted_at` IS NULL
+[Hook] 账户创建后: ID 1, 类型 savings
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:399
+[9.485ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:02.676','2025-08-16 20:56:02.676',NULL,1,'CREATE','accounts',1,'','account_type: savings, balance: 0.00','','','新账户创建')
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:247
+[33.941ms] [rows:1] INSERT INTO `accounts` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`account_type`,`balance`,`currency`,`is_active`,`daily_limit`) VALUES ('2025-08-16 20:56:02.665','2025-08-16 20:56:02.665',NULL,1,'savings',0,'CNY',true,10000)
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:264
+[5.935ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:02.685','2025-08-16 20:56:02.685',NULL,1,'CREATE','users',1,'','username: alice, email: alice@example.com','','','新用户注册')
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:280
+[73.585ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:02.691','2025-08-16 20:56:02.691',NULL,1,'email','欢迎注册','欢迎 Alice Wang 注册我们的银行系统！','pending',NULL,0,'')
+[Hook] 用户 alice 的默认账户和通知已创建
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:721
+[128.235ms] [rows:1] INSERT INTO `users` (`created_at`,`updated_at`,`deleted_at`,`username`,`email`,`full_name`,`phone`,`is_active`,`last_login_at`) VALUES ('2025-08-16 20:56:02.637','2025-08-16 20:56:02.637',NULL,'alice','alice@example.com','Alice Wang','',true,NULL)
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:731
+[7.130ms] [rows:1] SELECT * FROM `accounts` WHERE (user_id = 1 AND account_type = 'savings') AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建前: 账户ID 1, 类型 deposit, 金额 1000.00
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:434
+[9.932ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 1 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建后: ID 1, 参考号 deposit_1_1755348962
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:514
+[7.311ms] [rows:1] UPDATE `accounts` SET `balance`=balance + 1000,`updated_at`='2025-08-16 20:56:02.791' WHERE id = 1 AND `accounts`.`deleted_at` IS NULL
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:521
+[6.865ms] [rows:1] UPDATE `transactions` SET `status`='completed',`updated_at`='2025-08-16 20:56:02.798' WHERE `transactions`.`deleted_at` IS NULL AND `id` = 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:540
+[58.833ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:02.805','2025-08-16 20:56:02.805',NULL,1,'CREATE','transactions',1,'','type: deposit, amount: 1000.00, reference: deposit_1_1755348962','','','deposit 交易')
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:548
+[6.079ms] [rows:1] SELECT * FROM `users` WHERE `users`.`id` = 1 AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:561
+[5.521ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:02.871','2025-08-16 20:56:02.871',NULL,1,'sms','交易通知','您的账户发生 deposit 交易，金额: 1000.00，余额: 1000.00','pending',NULL,0,'')
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:749
+[104.216ms] [rows:1] INSERT INTO `transactions` (`created_at`,`updated_at`,`deleted_at`,`account_id`,`user_id`,`transaction_type`,`amount`,`balance_before`,`balance_after`,`description`,`reference`,`status`,`to_account_id`,`transfer_fee`,`exchange_rate`) VALUES ('2025-08-16 20:56:02.782','2025-08-16 20:56:02.782',NULL,1,1,'deposit',1000,0,1000,'初始存款','deposit_1_1755348962','pending',NULL,0,1)
+✓ 用户 alice 创建成功，ID: 1
+[Hook] 用户创建前: bob
+[Hook] 用户创建后: bob (ID: 2)
+[Hook] 账户创建前: 用户ID 2, 类型 savings
+
+2025/08/16 20:56:02 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:369
+[5.519ms] [rows:1] SELECT count(*) FROM `accounts` WHERE (user_id = 2 AND account_type = 'savings' AND is_active = true) AND `accounts`.`deleted_at` IS NULL
+[Hook] 账户创建后: ID 2, 类型 savings
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:399
+[65.699ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:02.975','2025-08-16 20:56:02.975',NULL,2,'CREATE','accounts',2,'','account_type: savings, balance: 0.00','','','新账户创建')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:247
+[88.802ms] [rows:1] INSERT INTO `accounts` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`account_type`,`balance`,`currency`,`is_active`,`daily_limit`) VALUES ('2025-08-16 20:56:02.957','2025-08-16 20:56:02.957',NULL,2,'savings',0,'CNY',true,10000)
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:264
+[66.584ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.041','2025-08-16 20:56:03.041',NULL,2,'CREATE','users',2,'','username: bob, email: bob@example.com','','','新用户注册')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:280
+[4.026ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.107','2025-08-16 20:56:03.107',NULL,2,'email','欢迎注册','欢迎 Bob Chen 注册我们的银行系统！','pending',NULL,0,'')
+[Hook] 用户 bob 的默认账户和通知已创建
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:721
+[166.619ms] [rows:1] INSERT INTO `users` (`created_at`,`updated_at`,`deleted_at`,`username`,`email`,`full_name`,`phone`,`is_active`,`last_login_at`) VALUES ('2025-08-16 20:56:02.945','2025-08-16 20:56:02.945',NULL,'bob','bob@example.com','Bob Chen','',true,NULL)
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:731
+[9.948ms] [rows:1] SELECT * FROM `accounts` WHERE (user_id = 2 AND account_type = 'savings') AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建前: 账户ID 2, 类型 deposit, 金额 2000.00
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:434
+[7.824ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 2 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建后: ID 2, 参考号 deposit_2_1755348963
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:514
+[7.935ms] [rows:1] UPDATE `accounts` SET `balance`=balance + 2000,`updated_at`='2025-08-16 20:56:03.138' WHERE id = 2 AND `accounts`.`deleted_at` IS NULL
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:521
+[6.102ms] [rows:1] UPDATE `transactions` SET `status`='completed',`updated_at`='2025-08-16 20:56:03.146' WHERE `transactions`.`deleted_at` IS NULL AND `id` = 2
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:540
+[6.914ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.152','2025-08-16 20:56:03.152',NULL,2,'CREATE','transactions',2,'','type: deposit, amount: 2000.00, reference: deposit_2_1755348963','','','deposit 交易')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:548
+[8.528ms] [rows:1] SELECT * FROM `users` WHERE `users`.`id` = 2 AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:561
+[6.987ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.167','2025-08-16 20:56:03.167',NULL,2,'sms','交易通知','您的账户发生 deposit 交易，金额: 2000.00，余额: 2000.00','pending',NULL,0,'')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:749
+[52.862ms] [rows:1] INSERT INTO `transactions` (`created_at`,`updated_at`,`deleted_at`,`account_id`,`user_id`,`transaction_type`,`amount`,`balance_before`,`balance_after`,`description`,`reference`,`status`,`to_account_id`,`transfer_fee`,`exchange_rate`) VALUES ('2025-08-16 20:56:03.129','2025-08-16 20:56:03.129',NULL,2,2,'deposit',2000,0,2000,'初始存款','deposit_2_1755348963','pending',NULL,0,1)
+✓ 用户 bob 创建成功，ID: 2
+[Hook] 用户创建前: charlie
+[Hook] 用户创建后: charlie (ID: 3)
+[Hook] 账户创建前: 用户ID 3, 类型 savings
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:369
+[7.022ms] [rows:1] SELECT count(*) FROM `accounts` WHERE (user_id = 3 AND account_type = 'savings' AND is_active = true) AND `accounts`.`deleted_at` IS NULL
+[Hook] 账户创建后: ID 3, 类型 savings
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:399
+[11.503ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.245','2025-08-16 20:56:03.245',NULL,3,'CREATE','accounts',3,'','account_type: savings, balance: 0.00','','','新账户创建')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:247
+[36.115ms] [rows:1] INSERT INTO `accounts` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`account_type`,`balance`,`currency`,`is_active`,`daily_limit`) VALUES ('2025-08-16 20:56:03.227','2025-08-16 20:56:03.227',NULL,3,'savings',0,'CNY',true,10000)
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:264
+[7.611ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.256','2025-08-16 20:56:03.256',NULL,3,'CREATE','users',3,'','username: charlie, email: charlie@example.com','','','新用户注册')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:280
+[6.885ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.264','2025-08-16 20:56:03.264',NULL,3,'email','欢迎注册','欢迎 Charlie Li 注册我们的银行系统！','pending',NULL,0,'')
+[Hook] 用户 charlie 的默认账户和通知已创建
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:721
+[58.818ms] [rows:1] INSERT INTO `users` (`created_at`,`updated_at`,`deleted_at`,`username`,`email`,`full_name`,`phone`,`is_active`,`last_login_at`) VALUES ('2025-08-16 20:56:03.212','2025-08-16 20:56:03.212',NULL,'charlie','charlie@example.com','Charlie Li','',true,NULL)
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:731
+[18.628ms] [rows:1] SELECT * FROM `accounts` WHERE (user_id = 3 AND account_type = 'savings') AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建前: 账户ID 3, 类型 deposit, 金额 500.00
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:434
+[9.055ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 3 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建后: ID 3, 参考号 deposit_3_1755348963
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:514
+[15.423ms] [rows:1] UPDATE `accounts` SET `balance`=balance + 500,`updated_at`='2025-08-16 20:56:03.304' WHERE id = 3 AND `accounts`.`deleted_at` IS NULL
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:521
+[9.543ms] [rows:1] UPDATE `transactions` SET `status`='completed',`updated_at`='2025-08-16 20:56:03.319' WHERE `transactions`.`deleted_at` IS NULL AND `id` = 3
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:540
+[7.171ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.329','2025-08-16 20:56:03.329',NULL,3,'CREATE','transactions',3,'','type: deposit, amount: 500.00, reference: deposit_3_1755348963','','','deposit 交易')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:548
+[6.797ms] [rows:1] SELECT * FROM `users` WHERE `users`.`id` = 3 AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:561
+[4.956ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.343','2025-08-16 20:56:03.343',NULL,3,'sms','交易通知','您的账户发生 deposit 交易，金额: 500.00，余额: 500.00','pending',NULL,0,'')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:749
+[59.130ms] [rows:1] INSERT INTO `transactions` (`created_at`,`updated_at`,`deleted_at`,`account_id`,`user_id`,`transaction_type`,`amount`,`balance_before`,`balance_after`,`description`,`reference`,`status`,`to_account_id`,`transfer_fee`,`exchange_rate`) VALUES ('2025-08-16 20:56:03.298','2025-08-16 20:56:03.298',NULL,3,3,'deposit',500,0,500,'初始存款','deposit_3_1755348963','pending',NULL,0,1)
+✓ 用户 charlie 创建成功，ID: 3
+
+=== 演示2：转账操作 ===
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:1149
+[11.194ms] [rows:1] SELECT * FROM `accounts` WHERE user_id = (SELECT id FROM users WHERE username = 'alice') AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:1150
+[7.097ms] [rows:1] SELECT * FROM `accounts` WHERE user_id = (SELECT id FROM users WHERE username = 'bob') AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:778
+[10.225ms] [rows:1] SELECT * FROM `accounts` WHERE (id = 1 AND is_active = true) AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:784
+[6.989ms] [rows:1] SELECT * FROM `accounts` WHERE (id = 2 AND is_active = true) AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建前: 账户ID 1, 类型 transfer, 金额 300.00
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:434
+[6.999ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 1 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:466
+[6.331ms] [rows:1] SELECT COALESCE(SUM(amount), 0) FROM `transactions` WHERE (account_id = 1 AND transaction_type IN ('withdraw','transfer') AND DATE(created_at) = '2025-08-16' AND status = 'completed') AND `transactions`.`deleted_at` IS NULL
+[Hook] 交易创建后: ID 4, 参考号 transfer_1_1755348963
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:514
+[6.815ms] [rows:1] UPDATE `accounts` SET `balance`=balance + -300,`updated_at`='2025-08-16 20:56:03.447' WHERE id = 1 AND `accounts`.`deleted_at` IS NULL
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:521
+[13.440ms] [rows:1] UPDATE `transactions` SET `status`='completed',`updated_at`='2025-08-16 20:56:03.454' WHERE `transactions`.`deleted_at` IS NULL AND `id` = 4
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:540
+[9.574ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.468','2025-08-16 20:56:03.468',NULL,1,'CREATE','transactions',4,'','type: transfer, amount: 300.00, reference: transfer_1_1755348963','','','transfer 交易')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:548
+[6.486ms] [rows:1] SELECT * FROM `users` WHERE `users`.`id` = 1 AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:561
+[6.929ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.484','2025-08-16 20:56:03.484',NULL,1,'sms','交易通知','您的账户发生 transfer 交易，金额: 300.00，余额: 700.00','pending',NULL,0,'')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:810
+[65.395ms] [rows:1] INSERT INTO `transactions` (`created_at`,`updated_at`,`deleted_at`,`account_id`,`user_id`,`transaction_type`,`amount`,`balance_before`,`balance_after`,`description`,`reference`,`status`,`to_account_id`,`transfer_fee`,`exchange_rate`) VALUES ('2025-08-16 20:56:03.439','2025-08-16 20:56:03.439',NULL,1,1,'transfer',300,1000,700,'转账至账户 2: 还款','transfer_1_1755348963','pending',2,0,1)
+[Hook] 交易创建前: 账户ID 2, 类型 deposit, 金额 300.00
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:434
+[5.913ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 2 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建后: ID 5, 参考号 transfer_1_1755348963
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:514
+[7.404ms] [rows:1] UPDATE `accounts` SET `balance`=balance + 300,`updated_at`='2025-08-16 20:56:03.508' WHERE id = 2 AND `accounts`.`deleted_at` IS NULL
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:521
+[7.093ms] [rows:1] UPDATE `transactions` SET `status`='completed',`updated_at`='2025-08-16 20:56:03.515' WHERE `transactions`.`deleted_at` IS NULL AND `id` = 5
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:540
+[7.992ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.522','2025-08-16 20:56:03.522',NULL,2,'CREATE','transactions',5,'','type: deposit, amount: 300.00, reference: transfer_1_1755348963','','','deposit 交易')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:548
+[6.945ms] [rows:1] SELECT * FROM `users` WHERE `users`.`id` = 2 AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:561
+[6.038ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.537','2025-08-16 20:56:03.537',NULL,2,'sms','交易通知','您的账户发生 deposit 交易，金额: 300.00，余额: 2300.00','pending',NULL,0,'')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:833
+[52.516ms] [rows:1] INSERT INTO `transactions` (`created_at`,`updated_at`,`deleted_at`,`account_id`,`user_id`,`transaction_type`,`amount`,`balance_before`,`balance_after`,`description`,`reference`,`status`,`to_account_id`,`transfer_fee`,`exchange_rate`) VALUES ('2025-08-16 20:56:03.496','2025-08-16 20:56:03.496',NULL,2,2,'deposit',300,2000,2300,'来自账户 1 的转账: 还款','transfer_1_1755348963','pending',NULL,0,1)
+✓ 转账成功: 从账户 1 向账户 2 转账 300.00
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:991
+[7.766ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 1 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:991
+[5.865ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 2 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+转账后余额 - Alice: 700.00, Bob: 2300.00
+
+=== 演示3：批量交易 ===
+[Hook] 交易创建前: 账户ID 1, 类型 deposit, 金额 100.00
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:434
+[8.583ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 1 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建后: ID 6, 参考号 deposit_1_1755348963
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:514
+[6.073ms] [rows:1] UPDATE `accounts` SET `balance`=balance + 100,`updated_at`='2025-08-16 20:56:03.606' WHERE id = 1 AND `accounts`.`deleted_at` IS NULL
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:521
+[6.286ms] [rows:1] UPDATE `transactions` SET `status`='completed',`updated_at`='2025-08-16 20:56:03.612' WHERE `transactions`.`deleted_at` IS NULL AND `id` = 6
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:540
+[6.902ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.618','2025-08-16 20:56:03.618',NULL,1,'CREATE','transactions',6,'','type: deposit, amount: 100.00, reference: deposit_1_1755348963','','','deposit 交易')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:548
+[11.019ms] [rows:1] SELECT * FROM `users` WHERE `users`.`id` = 1 AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:561
+[7.216ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.636','2025-08-16 20:56:03.636',NULL,1,'sms','交易通知','您的账户发生 deposit 交易，金额: 100.00，余额: 800.00','pending',NULL,0,'')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:857
+[52.938ms] [rows:1] INSERT INTO `transactions` (`created_at`,`updated_at`,`deleted_at`,`account_id`,`user_id`,`transaction_type`,`amount`,`balance_before`,`balance_after`,`description`,`reference`,`status`,`to_account_id`,`transfer_fee`,`exchange_rate`) VALUES ('2025-08-16 20:56:03.6','2025-08-16 20:56:03.6',NULL,1,1,'deposit',100,700,800,'工资','deposit_1_1755348963','pending',NULL,0,1)
+[Hook] 交易创建前: 账户ID 2, 类型 withdraw, 金额 50.00
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:434
+[5.670ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 2 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:466
+[7.158ms] [rows:1] SELECT COALESCE(SUM(amount), 0) FROM `transactions` WHERE (account_id = 2 AND transaction_type IN ('withdraw','transfer') AND DATE(created_at) = '2025-08-16' AND status = 'completed') AND `transactions`.`deleted_at` IS NULL
+[Hook] 交易创建后: ID 7, 参考号 withdraw_2_1755348963
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:514
+[6.089ms] [rows:1] UPDATE `accounts` SET `balance`=balance + -50,`updated_at`='2025-08-16 20:56:03.666' WHERE id = 2 AND `accounts`.`deleted_at` IS NULL
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:521
+[8.044ms] [rows:1] UPDATE `transactions` SET `status`='completed',`updated_at`='2025-08-16 20:56:03.672' WHERE `transactions`.`deleted_at` IS NULL AND `id` = 7
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:540
+[6.371ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.68','2025-08-16 20:56:03.68',NULL,2,'CREATE','transactions',7,'','type: withdraw, amount: 50.00, reference: withdraw_2_1755348963','','','withdraw 交易')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:548
+[5.546ms] [rows:1] SELECT * FROM `users` WHERE `users`.`id` = 2 AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:561
+[11.565ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.693','2025-08-16 20:56:03.693',NULL,2,'sms','交易通知','您的账户发生 withdraw 交易，金额: 50.00，余额: 2250.00','pending',NULL,0,'')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:857
+[60.393ms] [rows:1] INSERT INTO `transactions` (`created_at`,`updated_at`,`deleted_at`,`account_id`,`user_id`,`transaction_type`,`amount`,`balance_before`,`balance_after`,`description`,`reference`,`status`,`to_account_id`,`transfer_fee`,`exchange_rate`) VALUES ('2025-08-16 20:56:03.657','2025-08-16 20:56:03.657',NULL,2,2,'withdraw',50,2300,2250,'ATM取款','withdraw_2_1755348963','pending',NULL,0,1)
+✓ 批量创建 2 个交易成功
+
+=== 演示4：账户状态管理 ===
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:914
+[7.171ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 1 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:920
+[6.967ms] [rows:1] UPDATE `accounts` SET `is_active`=false,`updated_at`='2025-08-16 20:56:03.763' WHERE `accounts`.`deleted_at` IS NULL AND `id` = 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:938
+[4.938ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.77','2025-08-16 20:56:03.77',NULL,1,'UPDATE','accounts',1,'is_active: false','is_active: false','','','账户状态变更: 可疑交易，临时冻结')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:961
+[6.199ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.775','2025-08-16 20:56:03.775',NULL,1,'email','账户状态变更通知','您的账户状态已变更为: 冻结， 原因: 可疑交易，临时冻结','pending',NULL,0,'')
+✓ 账户 1 状态更新为: false
+
+尝试在冻结账户上进行交易:
+[Hook] 交易创建前: 账户ID 1, 类型 withdraw, 金额 100.00
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:434
+[8.389ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 1 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+✓ 冻结账户交易被正确拒绝: 账户已被冻结
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:914
+[8.637ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 1 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:920
+[10.109ms] [rows:1] UPDATE `accounts` SET `is_active`=true,`updated_at`='2025-08-16 20:56:03.845' WHERE `accounts`.`deleted_at` IS NULL AND `id` = 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:938
+[6.644ms] [rows:1] INSERT INTO `audit_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`action`,`table_name`,`record_id`,`old_values`,`new_values`,`ip_address`,`user_agent`,`description`) VALUES ('2025-08-16 20:56:03.855','2025-08-16 20:56:03.855',NULL,1,'UPDATE','accounts',1,'is_active: true','is_active: true','','','账户状态变更: 调查完成，恢复正常')
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:961
+[7.323ms] [rows:1] INSERT INTO `notification_logs` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`type`,`title`,`content`,`status`,`sent_at`,`retry_count`,`error_msg`) VALUES ('2025-08-16 20:56:03.863','2025-08-16 20:56:03.863',NULL,1,'email','账户状态变更通知','您的账户状态已变更为: 激活， 原因: 调查完成，恢复正常','pending',NULL,0,'')
+✓ 账户 1 状态更新为: true
+
+=== 演示5：交易历史和审计日志 ===
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:1247
+[5.414ms] [rows:1] SELECT * FROM `users` WHERE username = 'alice' AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:1017
+[6.473ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 1 AND `accounts`.`deleted_at` IS NULL
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:1017
+[17.814ms] [rows:3] SELECT * FROM `transactions` WHERE user_id = 1 AND `transactions`.`deleted_at` IS NULL ORDER BY created_at DESC LIMIT 10        
+Alice的交易历史 (3条):
+  - deposit: 100.00 (completed) - 工资
+  - transfer: 300.00 (completed) - 转账至账户 2: 还款
+  - deposit: 1000.00 (completed) - 初始存款
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:1039
+[7.121ms] [rows:7] SELECT * FROM `audit_logs` WHERE user_id = 1 AND `audit_logs`.`deleted_at` IS NULL ORDER BY created_at DESC LIMIT 10
+
+Alice的审计日志 (7条):
+  - UPDATE accounts: 账户状态变更: 调查完成，恢复正常
+  - UPDATE accounts: 账户状态变更: 可疑交易，临时冻结
+  - CREATE transactions: deposit 交易
+  - CREATE transactions: transfer 交易
+  - CREATE transactions: deposit 交易
+  - CREATE users: 新用户注册
+  - CREATE accounts: 新账户创建
+
+=== 演示6：错误处理和回滚 ===
+尝试创建无效用户:
+[Hook] 用户创建前: x
+✓ 无效用户创建被正确拒绝: 创建用户失败: 用户名长度不能少于3个字符
+
+尝试余额不足的转账:
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:778
+[7.927ms] [rows:1] SELECT * FROM `accounts` WHERE (id = 2 AND is_active = true) AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:784
+[6.350ms] [rows:1] SELECT * FROM `accounts` WHERE (id = 1 AND is_active = true) AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+[Hook] 交易创建前: 账户ID 2, 类型 transfer, 金额 10000.00
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:434
+[6.579ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 2 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+✓ 余额不足转账被正确拒绝: 创建转出交易失败: 账户余额不足
+
+=== 最终余额检查 ===
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:991
+[6.314ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 1 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+
+2025/08/16 20:56:03 F:/Study/GO/Gorm/gorm/gorm-note/code/04_unit_exercises/level4/level4_transactions_hooks.go:991
+[7.392ms] [rows:1] SELECT * FROM `accounts` WHERE `accounts`.`id` = 2 AND `accounts`.`deleted_at` IS NULL ORDER BY `accounts`.`id` LIMIT 1
+最终余额 - Alice: 800.00, Bob: 2250.00
+
+=== Level 4 事务和钩子练习完成 ===
+(TraeAI-5) F:\Study\GO\Gorm\gorm\gorm-note\code\04_unit_exercises\level4 [0:0] $ 
+(TraeAI-5) F:\Study\GO\Gorm\gorm\gorm-note\code\04_unit_exercises\level4 [0:0] $ 

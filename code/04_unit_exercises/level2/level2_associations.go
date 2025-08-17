@@ -868,7 +868,7 @@ func main() {
 	// 初始化MySQL数据库
 	// 使用MySQL配置连接数据库
 	// 注意：请根据实际情况修改MySQL连接字符串
-	mysqlDSN := "root:123456@tcp(192.168.100.124:3306)/gorm_test?charset=utf8mb4&parseTime=True&loc=Local"
+	mysqlDSN := "root:fastbee@tcp(192.168.100.124:3306)/gorm_test?charset=utf8mb4&parseTime=True&loc=Local"
 	mysqlConfig := GetMySQLConfig(mysqlDSN)
 	mysqlDB := InitDatabase(mysqlConfig)
 	if mysqlDB != nil {
