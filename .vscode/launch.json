@@ -10,7 +10,7 @@
       "request": "launch",
       "mode": "auto",
       "cwd": "${workspaceFolder}",
-      "program": "${workspaceFolder}/code/04_unit_exercises/level5",
+      "program": "${workspaceFolder}/code/04_unit_exercises/level6",
       "dlvFlags": ["--check-go-version=false"]
     }
   ]
